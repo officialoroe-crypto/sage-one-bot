@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field
 
 from database.connection import SessionLocal
 from identity.auth import authenticate_request, get_or_create_authenticated_profile
-from workflows import repository
+from workflows.repository import repository
 
 router = APIRouter(prefix="/workflow", tags=["workflow"])
 

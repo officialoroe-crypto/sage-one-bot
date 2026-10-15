@@ -550,6 +550,52 @@ def create_session(claims: dict[str, Any] = Depends(_require_owner)):
         db.close()
 
 
+@app.get("/sessions")
+def list_sessions(
+    limit: int = 30,
+    claims: dict[str, Any] = Depends(_require_owner),
+):
+    """The owner's recent conversations, newest first, titled by the first message."""
+    from database.models import Message, Session as ChatSession
+
+    owner_key = f"{claims['auth_provider']}:{claims['auth_subject']}"
+    limit = max(1, min(limit, 100))
+    with SessionLocal() as db:
+        rows = (
+            db.query(ChatSession)
+            .filter(ChatSession.owner_key == owner_key)
+            .order_by(ChatSession.created_at.desc())
+            .limit(limit * 3)
+            .all()
+        )
+        items = []
+        for row in rows:
+            first = (
+                db.query(Message)
+                .filter(Message.session_id == row.id, Message.role == "user")
+                .order_by(Message.id.asc())
+                .first()
+            )
+            if first is None:
+                continue  # skip empty sessions
+            last = (
+                db.query(Message)
+                .filter(Message.session_id == row.id)
+                .order_by(Message.id.desc())
+                .first()
+            )
+            items.append({
+                "id": row.id,
+                "title": first.content.strip().replace("\n", " ")[:80],
+                "created_at": row.created_at.isoformat() if row.created_at else None,
+                "updated_at": last.created_at.isoformat() if last and last.created_at else None,
+            })
+            if len(items) >= limit:
+                break
+        items.sort(key=lambda i: i["updated_at"] or "", reverse=True)
+        return {"success": True, "sessions": items}
+
+
 @app.get("/session/{session_id}")
 def get_session(session_id: str, claims: dict[str, Any] = Depends(_require_owner)):
     db = SessionLocal()
@@ -1290,13 +1336,16 @@ def get_tasks(
 
     return {
         "success": True,
-        "tasks": tasks.list(status=status),
+        "tasks": tasks.list(
+            status=status,
+            owner_key=f"{claims['auth_provider']}:{claims['auth_subject']}",
+        ),
     }
 
 
 @app.get("/tasks/{task_id}")
-def get_task(task_id: str):
-    task = tasks.get(task_id)
+def get_task(task_id: str, claims: dict[str, Any] = Depends(_require_owner)):
+    task = tasks.get(task_id, owner_key=f"{claims['auth_provider']}:{claims['auth_subject']}")
     if task is None:
         raise HTTPException(status_code=404, detail="Task not found")
     return {
