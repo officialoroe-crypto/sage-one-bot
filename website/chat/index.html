@@ -8,8 +8,20 @@
   <meta name="theme-color" content="#04060c">
   <meta name="color-scheme" content="dark">
   <meta name="robots" content="noindex">
-  <title>SAGE Chat</title>
+  <title>Sign in and chat | SAGE ONE</title>
+  <meta name="description" content="Chat with SAGE, your personal AI mentor and execution partner. This page is a preview with scripted replies; nothing is sent anywhere.">
+  <link rel="canonical" href="https://officialoroe-crypto.github.io/sage-one/chat/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="SAGE ONE">
+  <meta property="og:title" content="Sign in and chat | SAGE ONE">
+  <meta property="og:description" content="Chat with SAGE, your personal AI mentor and execution partner. This page is a preview with scripted replies; nothing is sent anywhere.">
+  <meta property="og:url" content="https://officialoroe-crypto.github.io/sage-one/chat/">
+  <meta property="og:image" content="https://officialoroe-crypto.github.io/sage-one/assets/og-image.jpg">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../favicon.ico" sizes="48x48">
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+  <link rel="manifest" href="../site.webmanifest">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Michroma&display=swap">
@@ -19,12 +31,13 @@
   <!-- Sign in -->
   <main class="signin" id="signin">
     <div class="signin-card">
-      <img src="../assets/sage-logo.webp" width="960" height="960" alt="SAGE ONE logo">
+      <a href="../" aria-label="SAGE ONE website home"><img src="../assets/sage-logo.webp" width="960" height="960" alt="SAGE ONE logo"></a>
       <h1>Sign in to SAGE</h1>
       <p class="muted">Your personal AI mentor and execution partner.</p>
       <button type="button" class="btn primary" id="googleBtn">Continue with Google</button>
       <div class="divider">or</div>
       <button type="button" class="btn" id="ownerBtn">Continue in private owner mode</button>
+      <a class="back-link" href="../">Back to the website</a>
       <p class="fine">Preview: sign-in is simulated on this page and nothing is sent anywhere. The live app signs in with Google through the SAGE backend.</p>
     </div>
   </main>
@@ -68,7 +81,7 @@
       </div>
       <div class="composer-wrap">
         <form class="composer" id="composer" autocomplete="off">
-          <textarea id="input" rows="1" placeholder="Ask SAGE anything, or say where you want to go" aria-label="Message SAGE"></textarea>
+          <textarea id="input" rows="1" maxlength="2000" placeholder="Ask SAGE anything, or say where you want to go" aria-label="Message SAGE"></textarea>
           <button type="button" class="round mic" id="micBtn" aria-pressed="false" aria-label="Speak to SAGE">
             <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
           </button>

@@ -188,9 +188,22 @@
   }
 
   function setBusy(v) { busy = v; send.disabled = v || !msg.value.trim(); }
+  var toastTimer = null;
+  function toast(text, kind) {
+    var t = document.getElementById('toast');
+    if (!t) return;
+    t.className = 'toast show ' + (kind || 'ok');
+    t.textContent = text;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.className = 'toast'; }, 3500);
+  }
+  var bell = document.getElementById('bellBtn');
+  if (bell) bell.addEventListener('click', function () { toast('No new notifications.', 'ok'); });
+
   function ask(text, viaVoice) {
     text = (text || '').trim();
     if (!text || busy) return;
+    if (text.length > 500) { toast('That message is too long. Keep it under 500 characters.', 'err'); return; }
     if (sheet.hidden) openSheet();
     spokenMode = !!viaVoice;
     addBubble('you', text);

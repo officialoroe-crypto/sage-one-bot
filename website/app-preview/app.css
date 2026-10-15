@@ -139,3 +139,10 @@ p { margin: 0; }
 }
 .dots i { --r: 5.1rem; }
 .state .dots i { --r: 3rem; }
+
+.wordmark { text-decoration: none; color: inherit; }
+.toast { position: fixed; left: 50%; bottom: 6.5rem; transform: translate(-50%, 140%); max-width: min(90vw, 22rem); padding: .6rem 1rem; border-radius: 12px; background: #0e1525; border: 1px solid rgba(122,168,255,.34); z-index: 90; opacity: 0; transition: transform .25s ease, opacity .25s ease; font-size: .9rem; text-align: center; pointer-events: none; }
+.toast.show { transform: translate(-50%, 0); opacity: 1; }
+.toast.ok { border-color: rgba(63,220,152,.6); }
+.toast.err { border-color: rgba(255,122,99,.6); }
+@media (prefers-reduced-motion: reduce) { .toast { transition: none; } }

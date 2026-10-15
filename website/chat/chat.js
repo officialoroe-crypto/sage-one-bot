@@ -85,6 +85,15 @@
   var current = null; // open feature id
   var busy = false;
 
+  var toastTimer = null;
+  function toast(text, kind) {
+    var t = document.getElementById('toast');
+    if (!t) { t = document.createElement('div'); t.id = 'toast'; t.setAttribute('role', 'status'); t.setAttribute('aria-live', 'polite'); document.body.appendChild(t); }
+    t.className = 'toast show ' + (kind || 'ok');
+    t.textContent = text;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.className = 'toast'; }, 4000);
+  }
   function enter(mode) {
     $('accMode').textContent = mode;
     signin.hidden = true;
@@ -92,6 +101,7 @@
     renderNav();
     newChat();
     input.focus();
+    toast('Signed in (' + (mode.indexOf('Google') === 0 ? 'Google, simulated' : 'private owner mode') + '). Nothing was sent anywhere.', 'ok');
   }
   $('googleBtn').addEventListener('click', function () { enter('Signed in with Google (simulated)'); });
   $('ownerBtn').addEventListener('click', function () { enter('Private mode'); });
@@ -248,6 +258,7 @@
   function send(text) {
     text = (text || '').trim();
     if (!text || busy) return;
+    if (text.length > 2000) { toast('That message is too long. Keep it under 2,000 characters.', 'err'); return; }
     addMsg('you', text);
     if ($('chatTitle').textContent === 'New chat') $('chatTitle').textContent = text.length > 38 ? text.slice(0, 38) + '…' : text;
     input.value = '';

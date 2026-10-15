@@ -8,8 +8,20 @@
   <meta name="theme-color" content="#04060c">
   <meta name="color-scheme" content="dark">
   <meta name="robots" content="noindex">
-  <title>SAGE App Home</title>
+  <title>Phone app home | SAGE ONE</title>
+  <meta name="description" content="Preview of the SAGE phone app home: 13 Evolutions, your tier, Spark balance and the SAGE voice button. Example numbers only.">
+  <link rel="canonical" href="https://officialoroe-crypto.github.io/sage-one/app-preview/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="SAGE ONE">
+  <meta property="og:title" content="Phone app home | SAGE ONE">
+  <meta property="og:description" content="Preview of the SAGE phone app home: 13 Evolutions, your tier, Spark balance and the SAGE voice button. Example numbers only.">
+  <meta property="og:url" content="https://officialoroe-crypto.github.io/sage-one/app-preview/">
+  <meta property="og:image" content="https://officialoroe-crypto.github.io/sage-one/assets/og-image.jpg">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../favicon.ico" sizes="48x48">
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+  <link rel="manifest" href="../site.webmanifest">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Michroma&display=swap">
@@ -19,9 +31,9 @@
   <div class="phone" id="phone">
     <main class="home" id="home">
       <div class="bar-top">
-        <span class="wordmark">SAGE<small>ONE</small></span>
+        <a class="wordmark" href="../" aria-label="SAGE ONE website home">SAGE<small>ONE</small></a>
         <span class="spacer"></span>
-        <button type="button" class="icon-btn" aria-label="Notifications"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 17V11a6 6 0 0 1 12 0v6l2 2H4zM10 21h4"/></svg></button>
+        <button type="button" class="icon-btn" id="bellBtn" aria-label="Notifications"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 17V11a6 6 0 0 1 12 0v6l2 2H4zM10 21h4"/></svg></button>
         <span class="avatar" aria-hidden="true">O</span>
       </div>
       <div class="hello"><h1>Welcome back. What do we get done today?</h1></div>
@@ -84,11 +96,12 @@
       </div>
       <form class="compose" id="compose" autocomplete="off">
         <button type="button" class="round mic" id="mic" aria-pressed="false" aria-label="Speak to SAGE"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
-        <input id="msg" type="text" placeholder="Type or tap the mic" aria-label="Message SAGE">
+        <input id="msg" type="text" maxlength="500" placeholder="Type or tap the mic" aria-label="Message SAGE">
         <button type="submit" class="round send" id="send" aria-label="Send" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
       </form>
     </section>
   </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="app.js"></script>
 </body>
 </html>

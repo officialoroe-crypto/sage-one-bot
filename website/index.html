@@ -4,34 +4,51 @@
   <meta charset="utf-8">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://sage-one-api.onrender.com; object-src 'none'; base-uri 'none'; form-action 'none'">
   <meta name="referrer" content="no-referrer">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#04060c">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="SAGE ONE is a personal AI mentor and execution partner built in Nepal. SAGE Spark is its currency: 1 Spark = NPR 1.">
   <meta name="robots" content="index,follow">
+  <title>SAGE ONE | Personal AI mentor and execution partner</title>
+  <meta name="description" content="SAGE ONE is a personal AI mentor and execution partner built in Nepal. It researches, creates and carries out work, and asks before it acts. SAGE Spark: 1 Spark = NPR 1.">
+  <link rel="canonical" href="https://officialoroe-crypto.github.io/sage-one/">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="SAGE ONE">
-  <meta property="og:description" content="A personal AI mentor and execution partner. It researches, creates and carries out work, and asks before it acts.">
+  <meta property="og:site_name" content="SAGE ONE">
+  <meta property="og:title" content="SAGE ONE | Personal AI mentor and execution partner">
+  <meta property="og:description" content="SAGE ONE is a personal AI mentor and execution partner built in Nepal. It researches, creates and carries out work, and asks before it acts. SAGE Spark: 1 Spark = NPR 1.">
   <meta property="og:url" content="https://officialoroe-crypto.github.io/sage-one/">
-  <meta property="og:image" content="https://officialoroe-crypto.github.io/sage-one/assets/sage-logo.webp">
+  <meta property="og:image" content="https://officialoroe-crypto.github.io/sage-one/assets/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="SAGE ONE logo beside a golden Buddha under the moon and Mount Everest">
   <meta name="twitter:card" content="summary_large_image">
-  <title>SAGE ONE</title>
+  <meta name="twitter:title" content="SAGE ONE | Personal AI mentor and execution partner">
+  <meta name="twitter:description" content="SAGE ONE is a personal AI mentor and execution partner built in Nepal. It researches, creates and carries out work, and asks before it acts. SAGE Spark: 1 Spark = NPR 1.">
+  <meta name="twitter:image" content="https://officialoroe-crypto.github.io/sage-one/assets/og-image.jpg">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Michroma&display=swap">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <a class="skip" href="#top">Skip to content</a>
+  <div class="scrollbar" aria-hidden="true"><i id="scrollBar"></i></div>
   <header class="topbar">
     <div class="wrap">
-      <a class="wordmark" href="#top">SAGE<small>ONE</small></a>
-      <nav aria-label="Primary">
+      <a class="wordmark" href="./" aria-label="SAGE ONE, back to the top"><img class="mark" src="favicon.svg" width="28" height="28" alt="">SAGE<small>ONE</small></a>
+      <button type="button" class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="siteNav" aria-label="Open menu">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path class="bars" d="M4 7h16M4 12h16M4 17h16"/><path class="cross" d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+      <nav id="siteNav" aria-label="Primary">
         <a href="#evolution">Evolution</a>
         <a href="#spark">Spark</a>
         <a href="#ladder">Spend limits</a>
         <a href="#roadmap">Roadmap</a>
         <a href="app-preview/">Phone app</a>
+        <a href="#contact" data-contact-link hidden>Contact</a>
         <a class="signin-link" href="chat/">Sign in</a>
       </nav>
     </div>
@@ -59,7 +76,7 @@
           <h2>Learn, earn, evolve</h2>
           <p>Every step is a real stage in the order SAGE ONE works. Nothing skips ahead, and money alone never moves you up.</p>
         </div>
-        <ol class="flow">
+        <ol class="flow" tabindex="0" aria-label="The eight steps, scroll sideways on small screens">
           <li><b>Learn</b><span>Take in knowledge</span></li>
           <li><b>Practice</b><span>Use it on real tasks</span></li>
           <li><b>Evidence</b><span>Keep proof of the result</span></li>
@@ -133,7 +150,11 @@
             </div>
             <div>
               <span class="label" id="rankLabel">Rank</span>
-              <div class="chips" id="rankChips" role="group" aria-labelledby="rankLabel"></div>
+              <div class="hscroll">
+                <button type="button" class="hs-btn" data-dir="-1" aria-label="Scroll ranks left" disabled><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
+                <div class="chips" id="rankChips" role="group" aria-labelledby="rankLabel" tabindex="0"></div>
+                <button type="button" class="hs-btn" data-dir="1" aria-label="Scroll ranks right"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+              </div>
             </div>
             <div>
               <span class="label" id="levelLabel">Intensity</span>
@@ -169,10 +190,10 @@
         </div>
         <div class="panel">
           <div class="field-row">
-            <div class="field"><label for="sparkIn">Spark</label><input id="sparkIn" type="number" inputmode="numeric" min="0" step="1" value="1250"></div>
-            <div class="field"><label for="nprIn">Nepali rupees (NPR)</label><input id="nprIn" type="number" inputmode="numeric" min="0" step="1" value="1250"></div>
+            <div class="field"><label for="sparkIn">Spark</label><input id="sparkIn" type="number" inputmode="numeric" min="0" step="1" value="1250"><small class="field-msg" id="sparkIn-msg" role="alert"></small></div>
+            <div class="field"><label for="nprIn">Nepali rupees (NPR)</label><input id="nprIn" type="number" inputmode="numeric" min="0" step="1" value="1250"><small class="field-msg" id="nprIn-msg" role="alert"></small></div>
           </div>
-          <div class="scroll-x">
+          <div class="scroll-x" tabindex="0" role="region" aria-label="Premium work prices">
             <table>
               <thead><tr><th>Premium work</th><th class="r">Spark</th><th class="r">NPR</th></tr></thead>
               <tbody>
@@ -197,10 +218,10 @@
         <div class="split">
           <div class="panel">
             <div class="field-row">
-              <div class="field"><label for="lifeIn">Lifetime earned (Spark)</label><input id="lifeIn" type="number" inputmode="numeric" min="0" step="1" value="60"></div>
-              <div class="field"><label for="balIn">Balance now (Spark)</label><input id="balIn" type="number" inputmode="numeric" min="0" step="1" value="60"></div>
+              <div class="field"><label for="lifeIn">Lifetime earned (Spark)</label><input id="lifeIn" type="number" inputmode="numeric" min="0" step="1" value="60"><small class="field-msg" id="lifeIn-msg" role="alert"></small></div>
+              <div class="field"><label for="balIn">Balance now (Spark)</label><input id="balIn" type="number" inputmode="numeric" min="0" step="1" value="60"><small class="field-msg" id="balIn-msg" role="alert"></small></div>
             </div>
-            <div class="field"><label for="askIn">Amount SAGE wants to spend (Spark)</label><input id="askIn" type="number" inputmode="numeric" min="0" step="1" value="5"></div>
+            <div class="field"><label for="askIn">Amount SAGE wants to spend (Spark)</label><input id="askIn" type="number" inputmode="numeric" min="0" step="1" value="5"><small class="field-msg" id="askIn-msg" role="alert"></small></div>
             <div class="readouts" id="ladderBars" aria-live="polite"></div>
           </div>
           <div style="display:flex;flex-direction:column;gap:1.1rem;min-width:0">
@@ -276,13 +297,55 @@
     </section>
   </main>
 
+  <section id="contact" hidden>
+    <div class="wrap split">
+      <div class="contact-copy">
+        <h2>Get in touch</h2>
+        <p class="muted">Questions about SAGE ONE, Dhun Barsa Music, OROE or content work? Write or call.</p>
+        <ul class="contact-list">
+          <li data-contact-email-row hidden><span>Email</span><a id="contactEmail" href="#"></a></li>
+          <li data-contact-phone-row hidden><span>Phone</span><a id="contactPhone" href="#"></a></li>
+        </ul>
+      </div>
+      <form class="panel" id="contactForm" novalidate hidden>
+        <div class="field"><label for="cName">Your name</label><input id="cName" name="name" type="text" autocomplete="name" maxlength="100" required><small class="field-msg" id="cName-msg" role="alert"></small></div>
+        <div class="field"><label for="cEmail">Your email</label><input id="cEmail" name="email" type="email" autocomplete="email" maxlength="200" required><small class="field-msg" id="cEmail-msg" role="alert"></small></div>
+        <div class="field"><label for="cMsg">Message</label><textarea id="cMsg" name="message" rows="5" maxlength="2000" required></textarea><small class="field-msg" id="cMsg-msg" role="alert"></small></div>
+        <button type="submit" class="button primary">Send message</button>
+        <p class="form-status" id="contactStatus" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+  </main>
   <footer>
-    <div class="wrap">
-      <span>SAGE ONE. Built in Nepal.</span>
-      <span>Spark is platform currency, not a cryptocurrency or an investment.</span>
+    <div class="wrap foot">
+      <div class="foot-brand">
+        <a class="wordmark" href="./" aria-label="SAGE ONE, back to the top"><img class="mark" src="favicon.svg" width="28" height="28" alt="">SAGE<small>ONE</small></a>
+        <p>Built in Nepal.</p>
+        <p class="fine">Spark is platform currency, not a cryptocurrency or an investment.</p>
+      </div>
+      <nav class="foot-nav" aria-label="Footer">
+        <a href="#evolution">Evolution</a>
+        <a href="#spark">Spark</a>
+        <a href="#ladder">Spend limits</a>
+        <a href="#roadmap">Roadmap</a>
+        <a href="app-preview/">Phone app</a>
+        <a href="chat/">Open SAGE</a>
+        <a href="#contact" data-contact-link hidden>Contact</a>
+      </nav>
+      <div class="foot-contact" data-foot-contact hidden>
+        <a id="footEmail" href="#" hidden></a>
+        <a id="footPhone" href="#" hidden></a>
+      </div>
+      <p class="copy">&copy; <span id="year">2026</span> SAGE ONE. All rights reserved.</p>
     </div>
   </footer>
-
+  <button type="button" class="to-top" id="toTop" aria-label="Back to top" hidden>
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+  </button>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="site-config.js"></script>
   <script src="app.js"></script>
+  <script src="site.js"></script>
 </body>
 </html>
