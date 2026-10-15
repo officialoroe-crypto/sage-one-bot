@@ -1,0 +1,116 @@
+name: SAGE ONE Android Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      api_url:
+        description: "SAGE backend URL reachable from the Android device"
+        required: false
+        default: "http://127.0.0.1:8010"
+        type: string
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+concurrency:
+  group: sage-one-android-release-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  release-validation:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: frontend
+    env:
+      SAGE_ANDROID_API_URL: ${{ inputs.api_url || vars.SAGE_ANDROID_API_URL || 'http://127.0.0.1:8010' }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.3'
+          channel: stable
+          cache: true
+
+      - name: Generate Android platform files
+        run: flutter create --platforms=android --org com.sageone --project-name sage_one --no-pub .
+
+      - name: Configure microphone permission and local HTTP API access
+        run: |
+          python - <<'PY'
+          import re
+          from pathlib import Path
+
+          manifest = Path("android/app/src/main/AndroidManifest.xml")
+          content = manifest.read_text(encoding="utf-8")
+          permission = '    <uses-permission android:name="android.permission.RECORD_AUDIO" />'
+          if permission not in content:
+              marker = '<manifest xmlns:android="http://schemas.android.com/apk/res/android">'
+              if marker not in content:
+                  raise SystemExit("Android manifest root element was not found")
+              content = content.replace(marker, marker + "\n" + permission, 1)
+
+          # This Huawei development APK reaches the PC backend through ADB
+          # reverse over HTTP. Android release builds block cleartext traffic
+          # by default unless the generated manifest opts in.
+          if "android:usesCleartextTraffic=" not in content:
+              content, replacements = re.subn(
+                  r"<application\b",
+                  '<application android:usesCleartextTraffic="true"',
+                  content,
+                  count=1,
+              )
+              if replacements != 1:
+                  raise SystemExit("Android application element was not found")
+
+          manifest.write_text(content, encoding="utf-8")
+          print("SAGE Voice permission and local HTTP API access are configured")
+          PY
+
+      - name: Remove generated Flutter sample test
+        run: rm -f test/widget_test.dart
+
+      - name: Get packages
+        run: flutter pub get
+
+      - name: Analyze Flutter app
+        run: flutter analyze
+
+      - name: Run Flutter tests
+        run: flutter test
+
+      - name: Validate release backend URL
+        run: |
+          python - <<'PY'
+          import os
+          from urllib.parse import urlparse
+
+          value = os.environ["SAGE_ANDROID_API_URL"].strip()
+          parsed = urlparse(value)
+          if parsed.scheme not in {"http", "https"} or not parsed.hostname:
+              raise SystemExit("SAGE_ANDROID_API_URL must be an absolute HTTP(S) URL with a hostname")
+          if parsed.username or parsed.password:
+              raise SystemExit("Credentials must not be embedded in SAGE_ANDROID_API_URL")
+          print(f"Validated Android API endpoint: {parsed.scheme}://{parsed.netloc}")
+          PY
+
+      - name: Build release APK
+        run: flutter build apk --release --dart-define=SAGE_API_URL="$SAGE_ANDROID_API_URL"
+
+      - name: Build release App Bundle
+        run: flutter build appbundle --release --dart-define=SAGE_API_URL="$SAGE_ANDROID_API_URL"
+
+      - name: Upload release artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: sage-one-android-release
+          retention-days: 14
+          if-no-files-found: error
+          path: |
+            frontend/build/app/outputs/flutter-apk/app-release.apk
+            frontend/build/app/outputs/bundle/release/app-release.aab

@@ -1,0 +1,92 @@
+name: SAGE ONE Public Website and Web App
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "website/**"
+      - "frontend/**"
+      - ".github/workflows/sage-one-god-mode-pages.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "website/**"
+      - "frontend/**"
+      - ".github/workflows/sage-one-god-mode-pages.yml"
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: sage-one-public-pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v6
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.47.3"
+          channel: stable
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter test
+      - name: Require a real HTTPS backend URL for public builds
+        if: github.event_name != 'pull_request'
+        env:
+          SAGE_API_URL: ${{ vars.SAGE_API_URL }}
+        run: |
+          if [ -z "$SAGE_API_URL" ]; then
+            echo "::error::Set repository Actions variable SAGE_API_URL to the deployed HTTPS FastAPI base URL before deploying the public app."
+            exit 1
+          fi
+          case "$SAGE_API_URL" in
+            https://*) ;;
+            *)
+              echo "::error::SAGE_API_URL must begin with https://."
+              exit 1
+              ;;
+          esac
+      - name: Build the web app under /app/
+        env:
+          SAGE_API_URL: ${{ vars.SAGE_API_URL }}
+        run: |
+          if [ "$GITHUB_EVENT_NAME" != "pull_request" ]; then
+            flutter build web --release --base-href /sage-one/app/ --dart-define="SAGE_API_URL=$SAGE_API_URL"
+          else
+            # PR previews validate the frontend without needing production secrets.
+            flutter build web --release --base-href /sage-one/app/
+          fi
+      - name: Combine public landing page and web app
+        run: |
+          mkdir -p public_site/app
+          cp -R ../website/. public_site/
+          cp -R build/web/. public_site/app/
+          test -s public_site/index.html
+          test -s public_site/app/index.html
+      - name: Upload GitHub Pages artifact
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: frontend/public_site
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-24.04
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

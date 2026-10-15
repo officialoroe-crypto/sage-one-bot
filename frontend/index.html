@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SAGE ONE</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="orb">S</div><div><b>SAGE</b><span>ONE</span></div></div>
+    <nav>
+      <button class="nav active" data-view="home">⌂ <span>Home</span></button>
+      <button class="nav" data-view="chat">◉ <span>Chat</span></button>
+      <button class="nav" data-view="research">⌁ <span>Research</span></button>
+      <button class="nav" data-view="missions">◆ <span>Missions</span></button>
+      <button class="nav" data-view="spark">✦ <span>Spark</span></button>
+      <button class="nav" data-view="evolution">◇ <span>Evolution</span></button>
+      <button class="nav" data-view="world">◎ <span>World Intelligence</span></button>
+    </nav>
+    <div class="side-bottom">
+      <button class="nav" data-view="notifications">♢ <span>Notifications</span></button>
+      <button class="nav" data-view="settings">⚙ <span>Settings</span></button>
+    </div>
+  </aside>
+
+  <main>
+    <header><button id="menu">☰</button><div class="status"><i></i> SAGE is ready</div><div class="profile">N</div></header>
+
+    <section id="home" class="view active">
+      <div class="hero">
+        <div><p class="eyebrow">PERSONAL AI MENTOR</p><h1>Good morning,<br><em>Nishant.</em></h1><p class="muted">What are we building today?</p></div>
+        <div class="orb large"><span></span></div>
+      </div>
+      <div class="quick">
+        <button data-open="chat"><b>Talk to SAGE</b><small>Ask anything</small></button>
+        <button data-open="research"><b>Deep Research</b><small>Evidence + sources</small></button>
+        <button data-open="missions"><b>Start a Mission</b><small>Plan → execute → verify</small></button>
+      </div>
+      <div class="grid">
+        <article><span class="label">SPARK</span><strong>1,000</strong><small>platform credits</small><div class="bar"><i style="width:64%"></i></div></article>
+        <article><span class="label">EVOLUTION</span><strong>Bronze</strong><small>0 verified achievements</small><div class="tier">01</div></article>
+        <article><span class="label">SYSTEM</span><strong>Ready</strong><small>cloud-first execution</small><div class="pulse"></div></article>
+      </div>
+      <div class="section-title"><span>RECENT ACTIVITY</span><small>View history →</small></div>
+      <div class="activity"><div><b>Achievement Engine</b><span>Verified-result ledger online</span></div><time>Just now</time></div>
+    </section>
+
+    <section id="chat" class="view">
+      <div class="pagehead"><p class="eyebrow">CONVERSATION</p><h2>Talk to SAGE</h2><p class="muted">Direct answers. Real execution when you ask.</p></div>
+      <div class="chatbox"><div class="sage-msg"><div class="mini-orb">S</div><div><b>SAGE</b><p>I’m ready. Tell me the outcome you want.</p></div></div><div class="suggestions"><button>Plan my day</button><button>Research something</button><button>Build a mission</button></div><div class="composer"><input placeholder="Message SAGE…"><button>↑</button></div></div>
+    </section>
+
+    <section id="research" class="view"><div class="pagehead"><p class="eyebrow">RESEARCH OS</p><h2>Research</h2><p class="muted">Search → evidence → verify → synthesize.</p></div><div class="research-card"><div class="scan"><i></i><span>READY TO RESEARCH</span></div><input placeholder="What should SAGE investigate?"><button class="primary">Start research</button><div class="sources"><span>Sources will appear here</span><span>Freshness</span><span>Evidence</span></div></div></section>
+
+    <section id="missions" class="view"><div class="pagehead"><p class="eyebrow">EXECUTION</p><h2>Missions</h2><p class="muted">Turn goals into durable, trackable work.</p></div><div class="mission"><div><span class="pill">READY</span><h3>Your next mission</h3><p>Connect an outcome to a plan and let SAGE execute the steps.</p></div><button class="primary">Create mission</button></div><div class="empty">No active missions yet.</div></section>
+
+    <section id="spark" class="view"><div class="pagehead"><p class="eyebrow">PLATFORM ECONOMY</p><h2>Spark</h2><p class="muted">SAGE Spark is the platform currency: 1 Spark = NPR 1. Cash-out is not available yet.</p></div><div class="wallet"><span>AVAILABLE</span><strong>1,000</strong><small>✦ Spark</small><div class="spark-ring"></div></div><div class="price-grid"><div>Deep Research <b>25 ✦</b></div><div>Heavy Mission <b>50 ✦</b></div><div>Enhanced Verification <b>15 ✦</b></div><div>Premium Content Work <b>20 ✦</b></div></div></section>
+
+    <section id="evolution" class="view"><div class="pagehead"><p class="eyebrow">PROGRESSION</p><h2>Evolution</h2><p class="muted">Progress is earned through verified results.</p></div><div class="evo"><div class="evo-orb">01</div><div><span>CURRENT TIER</span><h3>Bronze</h3><p>Complete verified outcomes to evolve.</p></div></div><div class="tiers"><span>Bronze</span><span>Silver</span><span>Gold</span><span>Platinum</span><span>Jade</span><span>Ruby</span></div></section>
+
+    <section id="world" class="view"><div class="pagehead"><p class="eyebrow">WORLD INTELLIGENCE</p><h2>What’s happening?</h2><p class="muted">Traceable public-world knowledge with source transparency.</p></div><div class="world-card"><div class="live-dot"></div><div><b>Intelligence layer ready</b><p>Fresh signals, sources and verification will appear here.</p></div></div></section>
+
+    <section id="notifications" class="view"><div class="pagehead"><p class="eyebrow">UPDATES</p><h2>Notifications</h2></div><div class="empty">You're all caught up.</div></section>
+    <section id="settings" class="view"><div class="pagehead"><p class="eyebrow">CONTROL</p><h2>Settings</h2><p class="muted">Identity, permissions, privacy and SAGE behavior.</p></div><div class="settings"><div>Permissions <span>Protected ›</span></div><div>Memory <span>User-scoped ›</span></div><div>Appearance <span>Premium Dark ›</span></div></div></section>
+  </main>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

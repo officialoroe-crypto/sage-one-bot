@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://sage-one-api.onrender.com; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#04060c">
+  <meta name="color-scheme" content="dark">
+  <meta name="robots" content="noindex">
+  <title>Phone app home | SAGE ONE</title>
+  <meta name="description" content="Preview of the SAGE phone app home: 13 Evolutions, your tier, Spark balance and the SAGE voice button. Example numbers only.">
+  <link rel="canonical" href="https://officialoroe-crypto.github.io/sage-one/app-preview/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="SAGE ONE">
+  <meta property="og:title" content="Phone app home | SAGE ONE">
+  <meta property="og:description" content="Preview of the SAGE phone app home: 13 Evolutions, your tier, Spark balance and the SAGE voice button. Example numbers only.">
+  <meta property="og:url" content="https://officialoroe-crypto.github.io/sage-one/app-preview/">
+  <meta property="og:image" content="https://officialoroe-crypto.github.io/sage-one/assets/og-image.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../favicon.ico" sizes="48x48">
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+  <link rel="manifest" href="../site.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Michroma&display=swap">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <div class="phone" id="phone">
+    <main class="home" id="home">
+      <div class="bar-top">
+        <a class="wordmark" href="../" aria-label="SAGE ONE website home">SAGE<small>ONE</small></a>
+        <span class="spacer"></span>
+        <button type="button" class="icon-btn" id="bellBtn" aria-label="Notifications"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 17V11a6 6 0 0 1 12 0v6l2 2H4zM10 21h4"/></svg></button>
+        <span class="avatar" aria-hidden="true">O</span>
+      </div>
+      <div class="hello"><h1>Welcome back. What do we get done today?</h1></div>
+      <p class="preview-note">Preview with example numbers. A new account starts at 0 Spark.</p>
+
+      <section class="evo" id="evoCard" aria-label="Evolution">
+        <div class="orb-wrap" id="homeOrb" aria-hidden="true">
+          <span class="ring"></span><span class="ring two"></span><span class="dots" id="homeDots"></span>
+          <span class="orb">SAGE</span>
+        </div>
+        <div>
+          <h2 id="evoTitle">Evolution 01: Bronze</h2>
+          <p class="fine" id="evoSub">Your current rank</p>
+        </div>
+        <div class="progress" id="evoProgress">
+          <div class="row"><span><span class="tag blue" id="evoLevel">Mid</span></span><span class="num" id="evoPct">62% to Silver</span></div>
+          <div class="bar" role="progressbar" aria-label="Progress to the next Evolution" aria-valuemin="0" aria-valuemax="100" aria-valuenow="62"><i id="evoBar" style="width:62%"></i></div>
+        </div>
+        <div class="strip" id="strip" role="group" aria-label="The 13 Evolutions"></div>
+      </section>
+
+      <section class="card" id="moneyCard">
+        <div class="row-between"><h3>Money level</h3><span class="tag" id="moneyLevel">Bronze High</span></div>
+        <p class="muted" id="moneyText"></p>
+      </section>
+
+      <section class="card balance" id="balanceCard">
+        <div class="row-between"><h3>Spark balance</h3><span class="tag gold">1 Spark = NPR 1</span></div>
+        <div class="big num" id="balance">1,250</div>
+        <p class="muted num" id="balanceNpr">= NPR 1,250</p>
+        <div class="row-between"><span class="fine num">Earned 1,250</span><span class="fine num">Spent 0</span></div>
+        <p class="fine">Cash-out to rupees is not available yet.</p>
+      </section>
+    </main>
+
+    <nav class="tabs" aria-label="Main">
+      <button type="button" class="tab" aria-current="page" id="tabHome"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7v9H4z"/></svg>Home</button>
+      <button type="button" class="tab" data-cmd="Open research"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M16 16l4 4"/></svg>Research</button>
+      <button type="button" class="sage-btn" id="sageBtn" aria-label="Talk to SAGE"><span class="core" aria-hidden="true">SAGE</span>Talk</button>
+      <button type="button" class="tab" data-cmd="Show my tasks"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 12l3 3 5-6"/></svg>Tasks</button>
+      <button type="button" class="tab" data-cmd="Open my Spark wallet"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3L5 13h6l-1 8 8-10h-6z"/></svg>Wallet</button>
+    </nav>
+
+    <section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="SAGE" hidden>
+      <div class="sheet-head">
+        <button type="button" class="icon-btn" id="sheetClose" aria-label="Close SAGE"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+        <h2>SAGE</h2>
+        <span class="tag blue">Demo replies</span>
+      </div>
+      <div class="state" id="state" data-s="idle">
+        <div class="orb-wrap" aria-hidden="true"><span class="ring"></span><span class="ring two"></span><span class="dots" id="sheetDots"></span><span class="orb">SAGE</span></div>
+        <p class="state-label" id="stateLabel" aria-live="polite">Ask SAGE anything</p>
+      </div>
+      <div class="transcript" id="transcript" aria-live="polite"></div>
+      <div class="prompts" id="prompts">
+        <button type="button" data-cmd="Research the best time to visit Nepal">Research Nepal</button>
+        <button type="button" data-cmd="Open my Spark wallet">Spark wallet</button>
+        <button type="button" data-cmd="What is my Evolution rank?">My rank</button>
+        <button type="button" data-cmd="Run an ad for 15 Spark">Run an ad</button>
+      </div>
+      <form class="compose" id="compose" autocomplete="off">
+        <button type="button" class="round mic" id="mic" aria-pressed="false" aria-label="Speak to SAGE"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
+        <input id="msg" type="text" maxlength="500" placeholder="Type or tap the mic" aria-label="Message SAGE">
+        <button type="submit" class="round send" id="send" aria-label="Send" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+      </form>
+    </section>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
