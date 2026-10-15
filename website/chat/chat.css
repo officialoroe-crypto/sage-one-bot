@@ -107,7 +107,7 @@ p { margin: 0; }
 .msg.you .who { background: var(--surface-2); border: 1px solid var(--line-strong); }
 .msg .body { min-width: 0; display: grid; gap: 0.6rem; }
 .msg.you .body { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 0.55rem 0.9rem; }
-.msg .text { white-space: pre-wrap; overflow-wrap: anywhere; }
+.msg .text { overflow-wrap: anywhere; }
 .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
 .chip-link { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.7rem; border-radius: 999px; border: 1px solid var(--line-strong); background: transparent; color: var(--cyan); font-size: 0.9rem; }
 .chip-link:hover { background: var(--surface); }
@@ -183,3 +183,67 @@ p { margin: 0; }
 .toast.err { border-color: rgba(255,122,99,.6); }
 @media (prefers-reduced-motion: reduce) { .toast { transition: none; } }
 @media (min-width: 1400px) { .feed-inner { max-width: 52rem; } }
+
+/* ---------- real app additions ---------- */
+.server-status { font-size: 0.92rem; color: var(--muted); display: flex; align-items: center; gap: 0.5rem; justify-content: center; }
+.server-status::before { content: ""; width: 0.55rem; height: 0.55rem; border-radius: 50%; background: var(--muted); flex: none; }
+.server-status.ok::before { background: var(--ok); box-shadow: 0 0 8px var(--ok); }
+.server-status.bad { color: var(--fail); }
+.server-status.bad::before { background: var(--fail); }
+.google-slot { min-height: 2.75rem; display: grid; place-items: center; width: 100%; }
+.form-msg { font-size: 0.92rem; text-align: left; }
+.form-msg.err { color: var(--fail); }
+.form-msg[hidden] { display: none; }
+.onboard { align-items: start; }
+.onboard-card { width: 100%; max-width: 34rem; display: grid; gap: 1rem; padding-block: 1rem; }
+.onboard-card h1 { font-family: var(--display); font-weight: 400; font-size: 1.4rem; }
+.onboard-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+.onboard-actions .btn { width: auto; flex: 1 1 10rem; }
+.caps { border: 1px solid var(--line); border-radius: 12px; padding: 0.8rem 1rem; display: grid; gap: 0.5rem; margin: 0; min-width: 0; }
+.caps legend { color: var(--muted); font-size: 0.88rem; padding-inline: 0.3rem; }
+.check { display: flex; gap: 0.6rem; align-items: flex-start; font-size: 0.95rem; }
+.check input { margin-top: 0.25rem; flex: none; }
+.field textarea, .field select { padding: 0.55rem 0.7rem; border-radius: 10px; border: 1px solid var(--line-strong); background: var(--bg); color: var(--fg); width: 100%; font: inherit; resize: vertical; }
+.field input { color: var(--fg); font: inherit; }
+.project-chip { border: 1px solid rgba(82, 217, 255, 0.5); color: var(--cyan); background: transparent; border-radius: 999px; padding: 0.15rem 0.7rem; font-size: 0.82rem; cursor: pointer; max-width: 14rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.icon-btn { position: relative; }
+.badge { position: absolute; top: -0.2rem; right: -0.2rem; min-width: 1.1rem; height: 1.1rem; border-radius: 999px; background: var(--fail); color: #1a0500; font-size: 0.7rem; font-weight: 700; display: grid; place-items: center; padding-inline: 0.25rem; }
+.icon-btn[aria-pressed="true"] { border-color: var(--cyan); color: var(--cyan); }
+.rail-empty { color: var(--muted); font-size: 0.88rem; padding: 0.4rem 0.7rem; list-style: none; }
+.account-row .icon-btn { margin-left: auto; flex: none; }
+.msg .text p { margin: 0 0 0.7rem; }
+.msg .text p:last-child, .msg .text ul:last-child, .msg .text ol:last-child { margin-bottom: 0; }
+.msg .text ul, .msg .text ol { margin: 0 0 0.7rem; padding-left: 1.25rem; display: grid; gap: 0.25rem; }
+.msg .text pre { margin: 0 0 0.7rem; padding: 0.75rem 0.9rem; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; overflow-x: auto; font-size: 0.88rem; }
+.msg .text code { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.9em; }
+.msg .text a { color: var(--cyan); }
+.msg.you .text { white-space: normal; }
+.msg.error .text { color: var(--fail); }
+.msg.error .text .btn { margin-top: 0.4rem; }
+.msg.stopped .text { color: var(--muted); }
+.status { color: var(--muted); font-size: 0.92rem; }
+.fine.sys { text-align: center; }
+.round.send.stop { background: var(--fail); color: #1a0500; border-color: transparent; }
+.round.mic.live { border-color: var(--fail); color: var(--fail); animation: pulse 1.2s ease-in-out infinite; }
+@keyframes pulse { 50% { box-shadow: 0 0 0 6px rgba(255, 122, 99, 0.18); } }
+@media (prefers-reduced-motion: reduce) { .round.mic.live { animation: none; } }
+.sub { font-size: 0.95rem; color: var(--muted); font-weight: 500; margin: 0.4rem 0 0; }
+.row-actions { display: flex; gap: 0.4rem; flex: none; }
+.err-text { color: var(--fail); font-size: 0.92rem; white-space: pre-wrap; overflow-wrap: anywhere; }
+.pane-loading { padding: 0.5rem 0; }
+.list details { width: 100%; }
+.list li:has(details) { display: block; }
+.list summary { display: flex; justify-content: space-between; align-items: center; gap: 0.7rem; cursor: pointer; list-style: none; }
+.list summary::-webkit-details-marker { display: none; }
+.list details[open] > summary { margin-bottom: 0.6rem; }
+.list details > * + * { margin-top: 0.5rem; }
+.list .md p { margin: 0 0 0.6rem; }
+.list .md ul, .list .md ol { margin: 0 0 0.6rem; padding-left: 1.2rem; }
+.list .md pre { overflow-x: auto; background: var(--bg); padding: 0.6rem; border-radius: 8px; font-size: 0.85rem; }
+.linkbtn { background: none; border: 0; color: var(--cyan); padding: 0; font: inherit; text-decoration: underline; cursor: pointer; }
+.tiers { list-style: none; margin: 0.6rem 0 0; padding: 0; display: grid; gap: 0.25rem; }
+.tiers li { display: flex; justify-content: space-between; gap: 0.7rem; padding: 0.35rem 0.6rem; border-radius: 8px; color: var(--muted); }
+.tiers li.on { background: var(--surface-2); color: var(--fg); box-shadow: inset 0 0 0 1px var(--cyan); }
+.tabs { display: flex; gap: 0.4rem; margin-bottom: 0.9rem; }
+.assets { margin-top: 0.5rem; }
+.card form, form.card { display: grid; gap: 0.8rem; }

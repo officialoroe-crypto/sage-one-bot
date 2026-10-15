@@ -204,4 +204,77 @@ class OllamaProvider(BaseProvider):
         )
 
 
+    def think_with_tools(
+        self,
+        system_instruction: str,
+        user_message: str,
+        tools: list[dict],
+        tool_executor,
+        conversation: list[dict] | None = None,
+        max_iterations: int = 8,
+    ) -> ProviderResult:
+        """OpenAI-compatible tool loop (Ollama supports tools on tool-capable models)."""
+
+        messages: list[Any] = list(
+            self._build_messages(system_instruction, user_message, conversation)
+        )
+
+        for _ in range(max_iterations):
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=cast(Any, messages),
+                tools=cast(Any, tools),
+                tool_choice="auto",
+            )
+            message = response.choices[0].message
+            tool_calls = message.tool_calls or []
+
+            if not tool_calls:
+                content = message.content or ""
+                if not content.strip():
+                    raise RuntimeError("Ollama returned an empty final response.")
+                return ProviderResult(
+                    provider=self.name,
+                    model=self.model,
+                    response=content,
+                    interaction_id=getattr(response, "id", None),
+                )
+
+            messages.append(
+                {
+                    "role": "assistant",
+                    "content": message.content or "",
+                    "tool_calls": [
+                        {
+                            "id": call.id,
+                            "type": "function",
+                            "function": {
+                                "name": call.function.name,  # type: ignore[union-attr]
+                                "arguments": call.function.arguments,  # type: ignore[union-attr]
+                            },
+                        }
+                        for call in tool_calls
+                    ],
+                }
+            )
+
+            for call in tool_calls:
+                name = call.function.name  # type: ignore[union-attr]
+                try:
+                    arguments = json.loads(call.function.arguments or "{}")  # type: ignore[union-attr]
+                    tool_result = tool_executor(name, arguments)
+                except Exception as exc:
+                    tool_result = {"success": False, "error": str(exc)}
+                messages.append(
+                    {
+                        "role": "tool",
+                        "tool_call_id": call.id,
+                        "name": name,
+                        "content": json.dumps(tool_result, default=str),
+                    }
+                )
+
+        raise RuntimeError("Ollama reached the maximum tool iterations.")
+
+
 ollama = OllamaProvider()

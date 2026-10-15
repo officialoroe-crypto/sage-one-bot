@@ -7,7 +7,7 @@ The `website/` directory is the public-facing SAGE ONE landing surface.
 - This site explains SAGE ONE, SAGE WORKFLOW, Intelligence, Spark and Evolution.
 - It does not expose authenticated workspace data.
 - It does not pretend that publishing, social connections, research or execution are available from the public landing page.
-- The authenticated product remains the Flutter application and SAGE Core APIs.
+- `chat/` and `mobile/` are the real web app and phone page: they sign in with Google and use the SAGE Core API (see the repository README). The Flutter app remains a separate client.
 
 ## Local preview
 

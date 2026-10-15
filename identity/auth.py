@@ -112,13 +112,19 @@ def authenticate_request(request: Request) -> dict[str, Any]:
 
 
 def get_or_create_authenticated_profile(claims: dict[str, Any]) -> dict[str, Any]:
+    """Return the caller's profile, creating it on first sign-in.
+
+    A saved profile is never overwritten by the identity provider's display name:
+    the name the user chose in SAGE wins. The provider email may refresh, and the
+    provider name only fills a name that is still empty.
+    """
     existing = get_profile(claims["auth_provider"], claims["auth_subject"])
     if existing:
         return upsert_profile(
             auth_provider=claims["auth_provider"],
             auth_subject=claims["auth_subject"],
             email=claims.get("email"),
-            name=claims.get("name"),
+            name=None if existing.get("name") else claims.get("name"),
         )
 
     return upsert_profile(

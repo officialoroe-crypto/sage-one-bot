@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com/gsi/style; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.googleusercontent.com; connect-src 'self' https://sage-one-api.onrender.com http://localhost:8000 http://127.0.0.1:8000 https://accounts.google.com/gsi/; frame-src https://accounts.google.com/gsi/; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#04060c">
+  <meta name="color-scheme" content="dark">
+  <meta name="robots" content="noindex">
+  <title>SAGE phone home | SAGE ONE</title>
+  <meta name="description" content="SAGE on your phone: your real Evolution rank, Spark balance and a SAGE button to type or speak to your AI mentor.">
+  <link rel="canonical" href="https://officialoroe-crypto.github.io/sage-one/mobile/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="SAGE ONE">
+  <meta property="og:title" content="SAGE phone home | SAGE ONE">
+  <meta property="og:description" content="SAGE on your phone: your real Evolution rank, Spark balance and a SAGE button to type or speak to your AI mentor.">
+  <meta property="og:url" content="https://officialoroe-crypto.github.io/sage-one/mobile/">
+  <meta property="og:image" content="https://officialoroe-crypto.github.io/sage-one/assets/og-image.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../favicon.ico" sizes="48x48">
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+  <link rel="manifest" href="../site.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Michroma&display=swap">
+  <link rel="stylesheet" href="mobile.css">
+</head>
+<body>
+  <div class="phone" id="phone">
+    <main class="home" id="home">
+      <div class="bar-top">
+        <a class="wordmark" href="../index.html" aria-label="SAGE ONE website home">SAGE<small>ONE</small></a>
+        <span class="spacer"></span>
+        <a class="icon-btn" href="../chat/" aria-label="Open the full SAGE app"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14v10H9l-4 4z"/></svg></a>
+        <button type="button" class="avatar" id="avatar" aria-label="Sign out">?</button>
+      </div>
+      <div class="hello"><h1 id="hello">Welcome back. What do we get done today?</h1></div>
+      <p class="note-card" id="setupNote" hidden>Finish your setup in the <a href="../chat/">full SAGE app</a> so SAGE knows who you are.</p>
+
+      <section class="evo" id="evoCard" aria-label="Evolution">
+        <div class="orb-wrap" aria-hidden="true"><span class="ring"></span><span class="ring two"></span><span class="dots" id="homeDots"></span><span class="orb">SAGE</span></div>
+        <div>
+          <h2 id="evoTitle">Evolution</h2>
+          <p class="fine" id="evoSub">Your current rank</p>
+        </div>
+        <div class="progress">
+          <div class="row"><span><span class="tag blue" id="evoLevel">-</span></span><span class="num" id="evoPct"></span></div>
+          <div class="bar" role="progressbar" aria-label="Progress to the next Evolution" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="evoBar" style="width:0%"></i></div>
+        </div>
+        <div class="strip" id="strip" role="group" aria-label="The 13 Evolutions"></div>
+      </section>
+
+      <section class="card" id="moneyCard">
+        <div class="row-between"><h3>Money level</h3><span class="tag" id="moneyLevel">-</span></div>
+        <p class="muted" id="moneyText"></p>
+      </section>
+
+      <section class="card balance" id="balanceCard">
+        <div class="row-between"><h3>Spark balance</h3><span class="tag gold">1 Spark = NPR 1</span></div>
+        <div class="big num" id="balance">0</div>
+        <p class="muted num" id="balanceNpr">= NPR 0</p>
+        <div class="row-between"><span class="fine num" id="earned">Earned 0</span><span class="fine num" id="spent">Spent 0</span></div>
+        <p class="fine">Cash-out to rupees is not available yet.</p>
+      </section>
+    </main>
+
+    <nav class="tabs" aria-label="Main">
+      <button type="button" class="tab" aria-current="page" id="tabHome"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7v9H4z"/></svg>Home</button>
+      <button type="button" class="tab" id="tabResearch"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M16 16l4 4"/></svg>Research</button>
+      <button type="button" class="sage-btn" id="sageBtn" aria-label="Talk to SAGE"><span class="core" aria-hidden="true">SAGE</span>Talk</button>
+      <button type="button" class="tab" id="tabTasks"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 12l3 3 5-6"/></svg>Tasks</button>
+      <button type="button" class="tab" id="tabWallet"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3L5 13h6l-1 8 8-10h-6z"/></svg>Wallet</button>
+    </nav>
+
+    <section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="SAGE" hidden>
+      <div class="sheet-head">
+        <button type="button" class="icon-btn" id="sheetClose" aria-label="Close SAGE"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+        <h2 id="sheetTitle">SAGE</h2>
+        <button type="button" class="btn" id="stopBtn" hidden>Stop</button>
+      </div>
+      <div class="state" id="state" data-s="idle">
+        <div class="orb-wrap" aria-hidden="true"><span class="ring"></span><span class="ring two"></span><span class="dots" id="sheetDots"></span><span class="orb">SAGE</span></div>
+        <p class="state-label" id="stateLabel" aria-live="polite">Ask SAGE anything</p>
+      </div>
+      <div class="transcript" id="transcript" aria-live="polite"></div>
+      <form class="compose" id="compose" autocomplete="off">
+        <button type="button" class="round mic" id="mic" aria-pressed="false" aria-label="Speak to SAGE" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
+        <input id="msg" type="text" maxlength="4000" placeholder="Type your message" aria-label="Message SAGE">
+        <button type="submit" class="round send" id="send" aria-label="Send" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+      </form>
+    </section>
+
+    <section class="gate" id="gate" aria-label="Sign in">
+      <div class="gate-card">
+        <a href="../index.html" aria-label="SAGE ONE website home"><img src="../assets/sage-logo.webp" width="960" height="960" alt="SAGE ONE logo"></a>
+        <h1>Sign in to SAGE</h1>
+        <p class="status" id="gateStatus" role="status" aria-live="polite">Connecting to the SAGE server...</p>
+        <div id="googleSlot"></div>
+        <button type="button" class="btn wide" id="devBtn" hidden>Local developer sign-in</button>
+        <p class="msg" id="gateMsg" role="alert" hidden></p>
+        <button type="button" class="btn" id="retryBtn" hidden>Try again</button>
+        <a href="../index.html" class="fine">Back to the website</a>
+      </div>
+    </section>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="../site-config.js"></script>
+  <script src="../sage-core.js"></script>
+  <script src="mobile.js"></script>
+</body>
+</html>

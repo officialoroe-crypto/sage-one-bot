@@ -174,3 +174,14 @@ def test_google_provider_outage_is_503_not_500(monkeypatch):
     with pytest.raises(Exception) as e:
         auth.verify_google_id_token("tok")
     assert e.value.status_code == 503
+
+
+def test_saved_profile_name_is_not_overwritten_by_provider_name():
+    from identity.auth import get_or_create_authenticated_profile
+    from identity.profile import upsert_profile
+    claims = {"auth_provider": "test", "auth_subject": "name-keep-1", "name": "Provider Name", "email": "a@b.test"}
+    first = get_or_create_authenticated_profile(claims)
+    assert first["name"] == "Provider Name"
+    upsert_profile(auth_provider="test", auth_subject="name-keep-1", name="Chosen Name")
+    again = get_or_create_authenticated_profile(claims)
+    assert again["name"] == "Chosen Name"
