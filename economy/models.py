@@ -36,6 +36,36 @@ class SparkLedgerEntry(Base):
     )
 
 
+class SparkPointsWallet(Base):
+    """SAGE Spark Points (SP): power points earned from achievements. No cash value, never withdrawable."""
+
+    __tablename__ = "spark_points_wallets"
+
+    owner_key: Mapped[str] = mapped_column(String, primary_key=True)
+    balance: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    lifetime_earned: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, default=lambda: datetime.now(timezone.utc), nullable=False
+    )
+
+
+class SparkPointsLedgerEntry(Base):
+    __tablename__ = "spark_points_ledger"
+    __table_args__ = (
+        UniqueConstraint("owner_key", "reference", name="uq_spark_points_reference"),
+    )
+
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=lambda: str(uuid4()))
+    owner_key: Mapped[str] = mapped_column(String, nullable=False, index=True)
+    delta: Mapped[int] = mapped_column(Integer, nullable=False)
+    balance_after: Mapped[int] = mapped_column(Integer, nullable=False)
+    reason: Mapped[str] = mapped_column(String, nullable=False)
+    reference: Mapped[str | None] = mapped_column(String, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime, default=lambda: datetime.now(timezone.utc), nullable=False
+    )
+
+
 class EvolutionProfile(Base):
     __tablename__ = "evolution_profiles"
 

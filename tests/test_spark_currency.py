@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 from config.settings import settings
 from database.connection import Base
 from economy import currency, spend_ladder
-from economy.models import EvolutionProfile, PremiumSparkTransaction, SparkLedgerEntry, SparkWallet
+from economy.models import EvolutionProfile, PremiumSparkTransaction, SparkLedgerEntry, SparkWallet, SparkPointsWallet, SparkPointsLedgerEntry
 from economy.service import grant_sparks, snapshot
 
 
@@ -14,7 +14,7 @@ def db_session(tmp_path):
     engine = create_engine(f"sqlite:///{tmp_path / 'currency.db'}")
     Base.metadata.create_all(
         engine,
-        tables=[SparkWallet.__table__, SparkLedgerEntry.__table__, EvolutionProfile.__table__, PremiumSparkTransaction.__table__],
+        tables=[SparkWallet.__table__, SparkLedgerEntry.__table__, EvolutionProfile.__table__, SparkPointsWallet.__table__, SparkPointsLedgerEntry.__table__, PremiumSparkTransaction.__table__],
     )
     with sessionmaker(bind=engine)() as session:
         yield session
@@ -135,8 +135,11 @@ def test_negative_wallet_values_raise():
         spend_ladder.spend_limit(balance=-1, lifetime_earned=0)
 
 
-def test_ladder_is_marked_provisional_and_incomplete():
+def test_ladder_matches_owner_decisions():
     info = spend_ladder.ladder_description()
-    assert info["provisional"] is True
-    assert info["ladder_complete"] is False
+    # Owner, 2026-10-17: no Silver/Gold spend limits, maximum 500, minimum starts at 1.
+    assert [(l["name"], l["sublevel"], l["threshold"]) for l in info["levels"]] == [
+        ("Bronze", "Low", 1), ("Bronze", "Mid", 10), ("Bronze", "High", 50)]
+    assert info["absolute_ceiling"] == 500
+    assert info["ladder_complete"] is True
     assert info["owner_approval_required"] is True

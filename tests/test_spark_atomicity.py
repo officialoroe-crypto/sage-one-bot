@@ -3,7 +3,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from database.connection import Base
-from economy.models import EvolutionProfile, SparkLedgerEntry, SparkWallet
+from economy.models import EvolutionProfile, SparkLedgerEntry, SparkWallet, SparkPointsWallet, SparkPointsLedgerEntry
 from economy.service import grant_sparks, spend_sparks, snapshot
 
 
@@ -12,7 +12,7 @@ def db_session(tmp_path):
     engine = create_engine(f"sqlite:///{tmp_path / 'economy.db'}")
     Base.metadata.create_all(
         engine,
-        tables=[SparkWallet.__table__, SparkLedgerEntry.__table__, EvolutionProfile.__table__],
+        tables=[SparkWallet.__table__, SparkLedgerEntry.__table__, EvolutionProfile.__table__, SparkPointsWallet.__table__, SparkPointsLedgerEntry.__table__],
     )
     Session = sessionmaker(bind=engine)
     with Session() as session:

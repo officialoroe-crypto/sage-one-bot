@@ -85,6 +85,7 @@
       $('balanceNpr').textContent = '= NPR ' + fmt(sp.npr_value);
       $('earned').textContent = 'Earned ' + fmt(sp.lifetime_earned);
       $('spent').textContent = 'Spent ' + fmt(sp.lifetime_spent);
+      $('spBal').textContent = fmt((eco.points || {}).balance || 0) + ' SP';
     }).catch(function (err) { if (err.status !== 401) toast(err.message, 'err'); });
   }
 

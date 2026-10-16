@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker
 
 from database.connection import Base
 from economy.achievements import VerifiedAchievementEvent, record_verified_achievement
-from economy.models import EvolutionProfile
+from economy.models import EvolutionProfile, SparkPointsWallet, SparkPointsLedgerEntry
 
 
 @pytest.fixture
@@ -12,7 +12,7 @@ def db_session(tmp_path):
     engine = create_engine(f"sqlite:///{tmp_path / 'verified-achievements.db'}")
     Base.metadata.create_all(
         engine,
-        tables=[EvolutionProfile.__table__, VerifiedAchievementEvent.__table__],
+        tables=[EvolutionProfile.__table__, SparkPointsWallet.__table__, SparkPointsLedgerEntry.__table__, VerifiedAchievementEvent.__table__],
     )
     Session = sessionmaker(bind=engine)
     with Session() as session:

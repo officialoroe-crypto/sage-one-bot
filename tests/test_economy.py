@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker
 
 from database.connection import Base
 from economy.costs import cost_catalog, cost_for
-from economy.models import EvolutionProfile, PremiumSparkTransaction, SparkLedgerEntry, SparkWallet
+from economy.models import EvolutionProfile, PremiumSparkTransaction, SparkLedgerEntry, SparkWallet, SparkPointsWallet, SparkPointsLedgerEntry
 from economy.service import (
     EVOLUTION_TIERS, _tier_for, grant_sparks, record_achievement, refund_premium_sparks,
     reserve_premium_sparks, reserve_premium_work, settle_premium_sparks, spend_sparks, snapshot,
@@ -16,7 +16,7 @@ def db_session(tmp_path):
     engine = create_engine(f"sqlite:///{tmp_path / 'economy.db'}")
     Base.metadata.create_all(
         engine,
-        tables=[SparkWallet.__table__, SparkLedgerEntry.__table__, EvolutionProfile.__table__, PremiumSparkTransaction.__table__],
+        tables=[SparkWallet.__table__, SparkLedgerEntry.__table__, EvolutionProfile.__table__, SparkPointsWallet.__table__, SparkPointsLedgerEntry.__table__, PremiumSparkTransaction.__table__],
     )
     Session = sessionmaker(bind=engine)
     with Session() as session:
@@ -153,3 +153,15 @@ def test_premium_work_uses_canonical_catalog_price(db_session):
     )
     assert transaction.amount == cost_for("research_deep")
     assert snapshot(db_session, owner)["spark"]["balance"] == 75
+
+
+def test_achievements_award_spark_points_not_spark(db_session):
+    from economy.service import get_wallet, get_points_wallet, grant_points
+    owner = "sp-owner"
+    record_achievement(db_session, owner, 120, "verified milestone")
+    assert get_points_wallet(db_session, owner).balance == 120
+    assert get_wallet(db_session, owner).balance == 0  # SS (cash) is never created by achievements
+    # same reference never pays twice
+    grant_points(db_session, owner, 5, "bonus", reference="r1")
+    grant_points(db_session, owner, 5, "bonus", reference="r1")
+    assert get_points_wallet(db_session, owner).balance == 125

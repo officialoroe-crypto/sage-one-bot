@@ -87,7 +87,10 @@ def record_verified_achievement(
     try:
         # Flush only: keep the event and Evolution mutation in one transaction.
         db.flush()
-        record_achievement(db, owner_key, amount, reason, commit=False)
+        record_achievement(
+            db, owner_key, amount, reason, commit=False,
+            reference=f"verified:{source_type}:{source_id}",
+        )
         if commit:
             db.commit()
     except IntegrityError:

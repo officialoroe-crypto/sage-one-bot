@@ -695,12 +695,15 @@
     render: function (el) {
       return Promise.all([S.api('GET', '/economy/me'), S.api('GET', '/economy/spend-limit'), S.api('GET', '/economy/costs'), S.api('GET', '/economy/currency')]).then(function (res) {
         var sp = res[0].spark, ledger = res[0].ledger || [], lim = res[1].spend_limit, costs = res[2].costs || [], cur = res[3].currency;
-        el.innerHTML = '<div class="card"><span class="fine">Spark balance</span><div class="big-gold num">' + fmt(sp.balance) + '</div>' +
+        var pts = res[0].points || { balance: 0, lifetime_earned: 0, rule: '' };
+        el.innerHTML = '<div class="card"><span class="fine">Spark Points (SP): power</span><div class="big-sp num" id="spBalance">' + fmt(pts.balance) + '</div>' +
+          '<p class="muted">' + esc(pts.rule || 'SP have no cash value and cannot be withdrawn.') + '</p><span class="fine">Earned ' + fmt(pts.lifetime_earned) + ' SP</span></div>' +
+          '<div class="card"><span class="fine">Spark (SS): cash value</span><div class="big-gold num">' + fmt(sp.balance) + '</div>' +
           '<p class="muted">= NPR ' + fmt(sp.npr_value) + ' (' + esc(cur.rule) + ')</p>' +
           '<div class="row-between"><span class="fine">Earned ' + fmt(sp.lifetime_earned) + '</span><span class="fine">Spent ' + fmt(sp.lifetime_spent) + '</span></div></div>' +
           '<div class="card"><h3>Spend limit</h3><p class="muted">' + esc(lim.note || '') + '</p>' +
           '<ul class="list"><li><span>Money level</span><b>' + esc(lim.level || 'None yet') + '</b></li><li><span>Locked as savings</span><b class="num">' + fmt(lim.savings_locked) + '</b></li><li><span>SAGE may propose up to</span><b class="num">' + fmt(lim.per_spend_limit) + ' Spark</b></li></ul>' +
-          '<p class="fine">You approve every spend. These limits are a draft until you confirm them.</p></div>' +
+          '<p class="fine">You approve every spend. The most SAGE can ever propose in one spend is 500 Spark.</p></div>' +
           '<div class="card"><h3>Premium work</h3><ul class="list">' + costs.map(function (c) { return '<li><span>' + esc(c.name) + '<small>' + esc(c.description) + '</small></span><b class="num">' + fmt(c.spark_cost) + ' Spark</b></li>'; }).join('') + '</ul></div>' +
           '<div class="card"><h3>Recent activity</h3>' + (ledger.length ? '<ul class="list">' + ledger.slice(0, 15).map(function (l) {
             var amt = Number(l.amount != null ? l.amount : l.delta || 0);

@@ -29,7 +29,7 @@
   var LADDER = [['Bronze', 'Low', 1], ['Bronze', 'Mid', 10], ['Bronze', 'High', 50]];
   var PERCENT_BANDS = [[100, 10], [1000, 5], [10000, 2]];
   var PERCENT_ABOVE = 1;
-  var CEILING = 200;
+  var CEILING = 500;
 
   function levelFor(life) {
     var reached = null;

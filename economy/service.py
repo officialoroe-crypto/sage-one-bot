@@ -9,7 +9,14 @@ from sqlalchemy.orm import Session
 
 from economy.costs import cost_for
 from economy.currency import spark_to_npr
-from economy.models import EvolutionProfile, PremiumSparkTransaction, SparkLedgerEntry, SparkWallet
+from economy.models import (
+    EvolutionProfile,
+    PremiumSparkTransaction,
+    SparkLedgerEntry,
+    SparkPointsLedgerEntry,
+    SparkPointsWallet,
+    SparkWallet,
+)
 from events.service import event_store
 
 EVOLUTION_TIERS = (
@@ -101,6 +108,64 @@ def _validate_replay(entry: SparkLedgerEntry, amount: int, is_spend: bool) -> Sp
         raise ValueError(
             f"Spark reference '{entry.reference}' was already used with a different amount."
         )
+    return entry
+
+
+def get_points_wallet(db: Session, owner_key: str) -> SparkPointsWallet:
+    wallet = db.get(SparkPointsWallet, owner_key)
+    if wallet is None:
+        wallet = SparkPointsWallet(owner_key=owner_key, balance=0, lifetime_earned=0)
+        db.add(wallet)
+        db.flush()
+    return wallet
+
+
+def grant_points(
+    db: Session,
+    owner_key: str,
+    amount: int,
+    reason: str,
+    reference: str | None = None,
+    *,
+    commit: bool = True,
+) -> SparkPointsLedgerEntry:
+    """Award SAGE Spark Points (SP). SP has no cash value and cannot be withdrawn.
+
+    A repeated reference returns the original entry, so the same achievement never pays twice.
+    """
+    if amount <= 0:
+        raise ValueError("Spark Points amount must be positive")
+    if reference:
+        existing = db.scalar(
+            select(SparkPointsLedgerEntry).where(
+                SparkPointsLedgerEntry.owner_key == owner_key,
+                SparkPointsLedgerEntry.reference == reference,
+            )
+        )
+        if existing is not None:
+            if existing.delta != amount:
+                raise ValueError(f"Spark Points reference '{reference}' was already used with a different amount.")
+            return existing
+    wallet = get_points_wallet(db, owner_key)
+    db.execute(
+        update(SparkPointsWallet)
+        .where(SparkPointsWallet.owner_key == owner_key)
+        .values(
+            balance=SparkPointsWallet.balance + amount,
+            lifetime_earned=SparkPointsWallet.lifetime_earned + amount,
+            updated_at=_now(),
+        )
+    )
+    db.flush()
+    db.refresh(wallet)
+    entry = SparkPointsLedgerEntry(
+        owner_key=owner_key, delta=amount, balance_after=wallet.balance, reason=reason, reference=reference
+    )
+    db.add(entry)
+    db.flush()
+    if commit:
+        db.commit()
+        db.refresh(entry)
     return entry
 
 
@@ -417,9 +482,12 @@ def record_achievement(
     reason: str,
     *,
     commit: bool = True,
+    reference: str | None = None,
 ) -> EvolutionProfile:
+    """Record an achievement: raises Evolution progress and awards the same amount of SP (never SS)."""
     if amount <= 0:
         raise ValueError("Achievement amount must be positive")
+    grant_points(db, owner_key, amount, reason, reference=reference, commit=False)
     profile = get_evolution(db, owner_key)
     profile.lifetime_achievement += amount
     profile.tier, profile.stage = _tier_for(profile.lifetime_achievement)
@@ -446,6 +514,7 @@ def record_achievement(
 
 def snapshot(db: Session, owner_key: str) -> dict:
     wallet = get_wallet(db, owner_key)
+    points = get_points_wallet(db, owner_key)
     evolution = get_evolution(db, owner_key)
     entries = db.scalars(
         select(SparkLedgerEntry)
@@ -454,8 +523,17 @@ def snapshot(db: Session, owner_key: str) -> dict:
         .limit(50)
     ).all()
     return {
+        "points": {
+            "name": "SAGE Spark Points",
+            "short": "SP",
+            "balance": points.balance,
+            "lifetime_earned": points.lifetime_earned,
+            "cash_value": False,
+            "rule": "SP are power points earned from achievements. They have no cash value and cannot be withdrawn.",
+        },
         "spark": {
             "name": "SAGE Spark",
+            "short": "SS",
             "balance": wallet.balance,
             "lifetime_earned": wallet.lifetime_earned,
             "lifetime_spent": wallet.lifetime_spent,

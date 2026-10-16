@@ -13,8 +13,7 @@ from economy.models import (
     EvolutionProfile,
     PremiumSparkTransaction,
     SparkLedgerEntry,
-    SparkWallet,
-)
+    SparkWallet, SparkPointsWallet, SparkPointsLedgerEntry)
 from economy.service import grant_sparks, premium_transaction, snapshot
 
 
@@ -33,7 +32,7 @@ def test_premium_task_api_to_worker_settles_spark_end_to_end(monkeypatch):
             Task.__table__,
             SparkWallet.__table__,
             SparkLedgerEntry.__table__,
-            EvolutionProfile.__table__,
+            EvolutionProfile.__table__, SparkPointsWallet.__table__, SparkPointsLedgerEntry.__table__,
             PremiumSparkTransaction.__table__,
         ],
     )

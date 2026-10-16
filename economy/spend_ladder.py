@@ -17,10 +17,10 @@ Rules (owner design, 2026-10-11):
     A passing check only means the amount may be put in front of the owner.
   * Fail closed: unknown levels, negative or zero amounts are refused.
 
-ALL NUMBERS ARE PROVISIONAL until the owner confirms them. The owner first
-described the Bronze caps and the 10 / 5 / 2 percent bands in dollars; they are
-read here as Spark. Silver and Gold are not defined yet, so the ladder stops at
-Bronze High and the limits stay at Bronze High until the owner sets them.
+Owner decisions (2026-10-17): there are no Silver or Gold spend limits, the
+maximum per spend is 500 Spark, and the minimum starts at 1 (Bronze Low). The
+percent bands (10 / 5 / 2 / 1) are still the owner's early draft. Amounts are
+Spark (SS), where 1 SS = NPR 1.
 """
 
 from __future__ import annotations
@@ -32,9 +32,9 @@ LADDER: tuple[tuple[str, str, int], ...] = (
     ("Bronze", "Low", 1),
     ("Bronze", "Mid", 10),
     ("Bronze", "High", 50),
-    # Silver and Gold: owner has not set values yet. Add them here when decided.
+    # Owner decision 2026-10-17: no Silver/Gold spend levels. Bronze High is the top level.
 )
-LADDER_COMPLETE = False
+LADDER_COMPLETE = True  # owner confirmed 2026-10-17: there are no Silver or Gold spend limits
 
 # (up to this lifetime-earnings amount, max share of earnings per single spend in %)
 PERCENT_BANDS: tuple[tuple[int, int], ...] = (
@@ -43,7 +43,7 @@ PERCENT_BANDS: tuple[tuple[int, int], ...] = (
     (10_000, 2),
 )
 PERCENT_ABOVE_BANDS = 1
-ABSOLUTE_CEILING = 200  # owner said 200 to 500; the safer low end is used until confirmed
+ABSOLUTE_CEILING = 500  # owner confirmed 2026-10-17: the maximum per spend is 500
 
 
 @dataclass(frozen=True)
@@ -115,7 +115,7 @@ def spend_limit(balance: int, lifetime_earned: int) -> SpendLimit:
         note=(
             "Every spend still needs the owner's approval."
             if LADDER_COMPLETE
-            else "Silver and Gold limits are not set yet; limits stay at the highest defined level."
+            else "Limits are provisional."
         ),
     )
 
@@ -144,5 +144,5 @@ def ladder_description() -> dict:
         + [{"up_to": None, "percent": PERCENT_ABOVE_BANDS}],
         "absolute_ceiling": ABSOLUTE_CEILING,
         "owner_approval_required": True,
-        "provisional": True,
+        "provisional": False,
     }

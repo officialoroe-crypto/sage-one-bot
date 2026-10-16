@@ -248,3 +248,4 @@ p { margin: 0; }
 .assets { margin-top: 0.5rem; }
 .card form, form.card { display: grid; gap: 0.8rem; }
 .lang-btn { font-size: .78rem; font-weight: 600; letter-spacing: .04em; width: auto; padding: 0 .65rem; }
+.big-sp { font-family: var(--display); font-size: 1.7rem; color: var(--cyan); line-height: 1.2; }
