@@ -78,6 +78,7 @@
       <div class="sheet-head">
         <button type="button" class="icon-btn" id="sheetClose" aria-label="Close SAGE"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
         <h2 id="sheetTitle">SAGE</h2>
+        <button type="button" class="btn" id="hushBtn" hidden>Stop speaking</button>
         <button type="button" class="btn" id="stopBtn" hidden>Stop</button>
       </div>
       <div class="state" id="state" data-s="idle">
@@ -86,6 +87,7 @@
       </div>
       <div class="transcript" id="transcript" aria-live="polite"></div>
       <form class="compose" id="compose" autocomplete="off">
+        <button type="button" class="round lang" id="langBtn" aria-label="Voice language">EN</button>
         <button type="button" class="round mic" id="mic" aria-pressed="false" aria-label="Speak to SAGE" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
         <input id="msg" type="text" maxlength="4000" placeholder="Type your message" aria-label="Message SAGE">
         <button type="submit" class="round send" id="send" aria-label="Send" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>

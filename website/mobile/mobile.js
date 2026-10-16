@@ -100,7 +100,7 @@
     if (prefill) msg.value = prefill; send.disabled = !msg.value.trim();
     setTimeout(function () { msg.focus(); }, 50);
   }
-  function closeSheet() { if (st.rec) { try { st.rec.stop(); } catch (e) { /* ignore */ } } if (window.speechSynthesis) window.speechSynthesis.cancel(); sheet.hidden = true; }
+  function closeSheet() { S.voice.stopListening(); S.voice.stopSpeaking(); sheet.hidden = true; }
   $('sheetClose').addEventListener('click', closeSheet);
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !sheet.hidden) closeSheet(); });
   $('sageBtn').addEventListener('click', function () { openSheet('chat'); });
@@ -120,10 +120,8 @@
     }, function (err) { transcript.innerHTML = '<p class="muted">' + esc(err.message) + '</p>'; });
   }
 
-  function speak(text) {
-    if (!window.speechSynthesis || !text) return;
-    var u = new SpeechSynthesisUtterance(text.replace(/[`*_#>]/g, '').slice(0, 1200)); window.speechSynthesis.cancel(); window.speechSynthesis.speak(u);
-  }
+  var V = S.voice;
+  function speak(text) { V.speak(text); }
   function ask(text, viaVoice) {
     if (st.busy || !text.trim()) return;
     st.busy = true; send.disabled = true; $('stopBtn').hidden = false;
@@ -136,7 +134,7 @@
       onStatus: function (t) { if (t.status === 'running') setState('thinking', 'SAGE is working on it...'); }
     });
     st.handle.promise.then(function (r) {
-      st.sessionId = r.sessionId; pending.innerHTML = S.md(r.text); setState('success', 'Done'); if (viaVoice) speak(r.text);
+      st.sessionId = r.sessionId; pending.innerHTML = S.md(r.text); setState('success', 'Done'); if (viaVoice && V.speak(r.text, function () { $('hushBtn').hidden = true; })) $('hushBtn').hidden = false;
       loadHomeQuiet();
     }, function (err) {
       pending.className = 'bubble sage error'; pending.textContent = err.message || 'SAGE could not finish that.'; setState('idle', 'Something went wrong');
@@ -149,21 +147,29 @@
     if (st.taskId) S.api('POST', '/tasks/' + encodeURIComponent(st.taskId) + '/cancel').catch(function () {});
   });
 
-  /* voice in (browser speech recognition, when the browser has it) */
-  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (SR) {
-    $('mic').hidden = false;
-    $('mic').addEventListener('click', function () {
-      var mic = $('mic');
-      if (st.rec) { try { st.rec.stop(); } catch (e) { /* ignore */ } return; }
-      var rec = new SR(); rec.lang = 'en-US'; rec.interimResults = false; rec.maxAlternatives = 1; st.rec = rec;
-      mic.setAttribute('aria-pressed', 'true'); setState('listening', 'Listening...');
-      rec.onresult = function (ev) { var t = ev.results[0][0].transcript; msg.value = t; ask(t, true); };
-      rec.onerror = function (ev) { setState('idle', ev.error === 'not-allowed' ? 'Microphone permission was denied.' : 'Could not hear that. Try again.'); };
-      rec.onend = function () { st.rec = null; mic.setAttribute('aria-pressed', 'false'); if ($('state').dataset.s === 'listening') setState('idle', 'Ask SAGE anything'); };
-      try { rec.start(); } catch (e) { st.rec = null; mic.setAttribute('aria-pressed', 'false'); }
+  /* voice in: shared SAGE.voice (browser speech recognition) */
+  var mic = $('mic'), langBtn = $('langBtn');
+  function paintLang() { langBtn.textContent = V.lang() === 'ne' ? 'ने' : 'EN'; langBtn.setAttribute('aria-label', 'Voice language: ' + V.langLabel() + '. Tap to switch.'); }
+  paintLang();
+  langBtn.addEventListener('click', function () {
+    V.toggleLang(); paintLang();
+    setState('idle', 'Voice language: ' + V.langLabel() + (V.lang() === 'ne' && V.canSpeak && !V.hasVoiceForLang() ? ' (no Nepali voice on this device for replies)' : ''));
+  });
+  if (V.canListen) mic.hidden = false;
+  mic.addEventListener('click', function () {
+    if (V.listening()) { V.stopListening(); return; }
+    V.stopSpeaking(); $('hushBtn').hidden = true;
+    var ok = V.listen({
+      onText: function (interim, final) { msg.value = (final + interim).trim(); send.disabled = st.busy || !msg.value.trim(); },
+      onError: function (code) { setState('idle', V.errorText(code)); },
+      onEnd: function (finalText) {
+        mic.setAttribute('aria-pressed', 'false');
+        if (finalText) ask(finalText, true); else if ($('state').dataset.s === 'listening') setState('idle', 'Ask SAGE anything');
+      }
     });
-  }
+    if (ok && V.listening()) { mic.setAttribute('aria-pressed', 'true'); setState('listening', 'Listening in ' + V.langLabel() + '...'); }
+  });
+  $('hushBtn').addEventListener('click', function () { V.stopSpeaking(); $('hushBtn').hidden = true; });
 
   /* ----------------------------------------------------------------- start */
   if (S.auth.get()) {

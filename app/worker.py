@@ -1,3 +1,4 @@
+import json
 import socket
 import threading
 import time
@@ -21,6 +22,7 @@ from workflows.repository import repository as workflow_repository
 from economy.models import PremiumSparkTransaction
 from economy.service import reserve_premium_work, settle_premium_sparks, refund_premium_sparks
 from sqlalchemy import select
+from app.answer import extract_answer
 
 
 class SageWorker:
@@ -77,7 +79,7 @@ class SageWorker:
                         db,
                         task["session_id"],
                         "assistant",
-                        str(result.get("final") if isinstance(result, dict) and result.get("final") else result),
+                        extract_answer(result),
                     )
             except Exception:
                 pass
@@ -335,7 +337,7 @@ class SageWorker:
             completed = tasks.complete_claim(
                 task_id=task_id,
                 worker_id=self.worker_id,
-                result=str(result),
+                result=json.dumps({"answer": extract_answer(result), "detail": result}, default=str),
             )
 
             if completed is not None:

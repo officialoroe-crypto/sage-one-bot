@@ -291,7 +291,77 @@
     toastTimer = setTimeout(function () { t.className = 'toast'; }, kind === 'err' ? 6000 : 3800);
   }
 
+  /* ----------------------------------------------------------------- voice
+     Uses the browser's own speech recognition and speech synthesis. Nothing is sent anywhere except
+     the text, which goes to the SAGE server like any typed message. */
+  var LANGS = { en: { code: 'en-US', label: 'English' }, ne: { code: 'ne-NP', label: 'Nepali' } };
+  var voice = (function () {
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    var lang = 'en', rec = null, speaking = false;
+    try { var saved = window.localStorage.getItem('sage.voiceLang'); if (saved && LANGS[saved]) lang = saved; } catch (e) { /* optional */ }
+    function pickVoice() {
+      var list = (window.speechSynthesis && window.speechSynthesis.getVoices && window.speechSynthesis.getVoices()) || [];
+      var want = LANGS[lang].code.toLowerCase(), base = want.slice(0, 2);
+      var v = list.filter(function (x) { return String(x.lang).toLowerCase().replace('_', '-') === want; })[0] ||
+              list.filter(function (x) { return String(x.lang).toLowerCase().indexOf(base) === 0; })[0];
+      if (!v && lang === 'ne') v = list.filter(function (x) { return String(x.lang).toLowerCase().indexOf('hi') === 0; })[0]; /* closest common voice */
+      return v || null;
+    }
+    return {
+      canListen: !!SR,
+      canSpeak: !!(window.speechSynthesis && window.SpeechSynthesisUtterance),
+      lang: function () { return lang; },
+      langLabel: function () { return LANGS[lang].label; },
+      setLang: function (l) { if (!LANGS[l]) return; lang = l; try { window.localStorage.setItem('sage.voiceLang', l); } catch (e) { /* optional */ } },
+      toggleLang: function () { this.setLang(lang === 'en' ? 'ne' : 'en'); return lang; },
+      listening: function () { return !!rec; },
+      /* handlers: onText(interim, final), onEnd(finalText), onError(code) */
+      listen: function (h) {
+        if (!SR) { h.onError && h.onError('unsupported'); return false; }
+        if (rec) { rec.stop(); return true; }
+        var final = '';
+        try {
+          rec = new SR();
+          rec.lang = LANGS[lang].code; rec.interimResults = true; rec.continuous = false; rec.maxAlternatives = 1;
+          rec.onresult = function (e) {
+            var interim = '';
+            for (var i = e.resultIndex; i < e.results.length; i++) { if (e.results[i].isFinal) final += e.results[i][0].transcript; else interim += e.results[i][0].transcript; }
+            h.onText && h.onText(interim, final);
+          };
+          rec.onerror = function (e) { h.onError && h.onError(e.error || 'error'); };
+          rec.onend = function () { rec = null; h.onEnd && h.onEnd(final.trim()); };
+          rec.start();
+          return true;
+        } catch (err) { rec = null; h.onError && h.onError('start-failed'); return false; }
+      },
+      stopListening: function () { if (rec) { try { rec.stop(); } catch (e) { /* ignore */ } } },
+      speak: function (text, onEnd) {
+        if (!this.canSpeak || !text) return false;
+        var plain = String(text).replace(/```[\s\S]*?```/g, ' code block ').replace(/[*_`#>]/g, '').slice(0, 1500);
+        try {
+          window.speechSynthesis.cancel();
+          var u = new window.SpeechSynthesisUtterance(plain);
+          var v = pickVoice(); if (v) u.voice = v; u.lang = v ? v.lang : LANGS[lang].code;
+          u.onend = u.onerror = function () { speaking = false; onEnd && onEnd(); };
+          speaking = true; window.speechSynthesis.speak(u); return true;
+        } catch (e) { speaking = false; return false; }
+      },
+      stopSpeaking: function () { speaking = false; try { window.speechSynthesis && window.speechSynthesis.cancel(); } catch (e) { /* ignore */ } },
+      speaking: function () { return speaking; },
+      hasVoiceForLang: function () { return !!pickVoice(); },
+      errorText: function (code) {
+        if (code === 'not-allowed' || code === 'service-not-allowed') return 'Microphone access was blocked. Allow the microphone for this site, or type your message.';
+        if (code === 'unsupported') return 'Voice input is not available in this browser. Try Chrome or Edge, or type your message.';
+        if (code === 'no-speech') return 'SAGE did not hear anything. Tap the microphone and try again.';
+        if (code === 'language-not-supported') return 'This browser cannot listen in ' + LANGS[lang].label + '. Switch the language or type your message.';
+        if (code === 'network') return 'Voice recognition needs an internet connection in this browser.';
+        return 'SAGE could not hear you. Try again or type your message.';
+      }
+    };
+  })();
+
   window.SAGE = {
+    voice: voice,
     base: base,
     esc: esc, fmt: fmt, md: md, relTime: relTime, toast: toast, on: on,
     api: api, ApiError: ApiError, TaskError: TaskError,

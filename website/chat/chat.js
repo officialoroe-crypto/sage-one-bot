@@ -360,6 +360,7 @@
     if (state.busy) return;
     var nav = intentPane(text);
     if (nav) {
+      state.viaVoice = false;
       input.value = ''; autosize(); sendBtn.disabled = true;
       addMsg('you', plain(text));
       addMsg('sage', 'Opening ' + esc(featureById(nav).label) + ' on the right.');
@@ -386,12 +387,14 @@
       holder.querySelector('.text').innerHTML = md(r.text);
       setBusy(false);
       scrollDown();
-      if (state.speak) speak(r.text);
+      if (state.speak || state.viaVoice) speak(r.text);
+      state.viaVoice = false;
       refreshHistory();
       refreshBalance();
       refreshBell();
     }, function (err) {
       var stopped = err && err.message === 'Stopped.';
+      state.viaVoice = false;
       holder.classList.add(stopped ? 'stopped' : 'error');
       holder.querySelector('.text').innerHTML = '<p>' + esc(err.message || 'Something went wrong.') + '</p>' +
         (stopped ? '' : '<button type="button" class="btn small" data-retry="' + esc(text) + '">Try again</button>');
@@ -415,7 +418,7 @@
   $('composer').addEventListener('submit', function (e) { e.preventDefault(); if (!state.busy) send(input.value); });
 
   /* ------------------------------------------------------------------ voice */
-  var recog = null, mic = $('micBtn');
+  var mic = $('micBtn'), speakBtn = $('speakBtn'), langBtn = $('langBtn'), V = S.voice;
   function note(t) {
     var el = document.createElement('p');
     el.className = 'fine sys';
@@ -423,53 +426,35 @@
     inner.appendChild(el);
     scrollDown();
   }
-  mic.addEventListener('click', function () {
-    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) return note('Voice input is not available in this browser. Try Chrome or Edge, or type your message.');
-    if (recog) { recog.stop(); return; }
-    try {
-      recog = new SR();
-      recog.lang = 'en-US';
-      recog.interimResults = true;
-      recog.continuous = false;
-      var finalText = '';
-      recog.onresult = function (e) {
-        var interim = '';
-        for (var i = e.resultIndex; i < e.results.length; i++) {
-          if (e.results[i].isFinal) finalText += e.results[i][0].transcript; else interim += e.results[i][0].transcript;
-        }
-        input.value = (finalText + interim).trim(); autosize(); sendBtn.disabled = !input.value.trim();
-      };
-      recog.onerror = function (e) {
-        note(e.error === 'not-allowed' ? 'Microphone access was blocked. Allow the microphone for this site, or type your message.' : 'SAGE could not hear you. Try again or type your message.');
-      };
-      recog.onend = function () {
-        mic.setAttribute('aria-pressed', 'false'); mic.classList.remove('live');
-        recog = null;
-        if (finalText.trim()) send(input.value);
-      };
-      recog.start();
-      mic.setAttribute('aria-pressed', 'true'); mic.classList.add('live');
-    } catch (err) {
-      recog = null;
-      note('Voice input could not start. Type your message instead.');
-    }
+  function paintLang() { langBtn.textContent = V.lang() === 'ne' ? 'ने' : 'EN'; langBtn.title = 'Voice language: ' + V.langLabel() + ' (tap to switch)'; langBtn.setAttribute('aria-label', 'Voice language: ' + V.langLabel() + '. Tap to switch.'); }
+  paintLang();
+  langBtn.addEventListener('click', function () {
+    V.toggleLang(); paintLang();
+    toast('Voice language: ' + V.langLabel() + '.' + (V.lang() === 'ne' && V.canSpeak && !V.hasVoiceForLang() ? ' This device has no Nepali voice yet, so replies may be read in another language.' : ''), 'ok');
   });
-  var speakBtn = $('speakBtn');
+  mic.addEventListener('click', function () {
+    if (V.listening()) { V.stopListening(); return; }
+    V.stopSpeaking();
+    var ok = V.listen({
+      onText: function (interim, final) { input.value = (final + interim).trim(); autosize(); sendBtn.disabled = !input.value.trim(); },
+      onError: function (code) { note(V.errorText(code)); },
+      onEnd: function (finalText) {
+        mic.setAttribute('aria-pressed', 'false'); mic.classList.remove('live');
+        if (finalText) { state.viaVoice = true; send(input.value); }
+      }
+    });
+    if (ok && V.listening()) { mic.setAttribute('aria-pressed', 'true'); mic.classList.add('live'); }
+  });
   speakBtn.addEventListener('click', function () {
-    if (!('speechSynthesis' in window)) return toast('This browser cannot read aloud.', 'err');
+    if (V.speaking()) { V.stopSpeaking(); toast('Stopped speaking.', 'ok'); return; }
+    if (!V.canSpeak) return toast('This browser cannot read aloud.', 'err');
     state.speak = !state.speak;
     speakBtn.setAttribute('aria-pressed', String(state.speak));
-    if (!state.speak) window.speechSynthesis.cancel();
+    if (!state.speak) V.stopSpeaking();
     toast(state.speak ? 'SAGE will read replies aloud.' : 'Reading aloud is off.', 'ok');
   });
-  function speak(text) {
-    try {
-      var plainText = String(text).replace(/```[\s\S]*?```/g, ' code block ').replace(/[*_`#>]/g, '').slice(0, 1500);
-      window.speechSynthesis.cancel();
-      window.speechSynthesis.speak(new SpeechSynthesisUtterance(plainText));
-    } catch (e) { /* speech is optional */ }
-  }
+  function speak(text) { V.speak(text); }
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') V.stopSpeaking(); });
 
   /* ----------------------------------------------------- notifications bell */
   function refreshBell() {

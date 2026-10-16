@@ -167,3 +167,4 @@ p { margin: 0; }
 .tasks-list li { border: 1px solid var(--line); border-radius: 12px; padding: 0.55rem 0.8rem; background: var(--surface); display: grid; gap: 0.2rem; }
 .tasks-list small { color: var(--muted); }
 .gem small { font-size: 0.62rem; opacity: 0.75; }
+.round.lang { font-size: .78rem; font-weight: 600; }

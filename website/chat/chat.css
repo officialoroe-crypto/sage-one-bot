@@ -247,3 +247,4 @@ p { margin: 0; }
 .tabs { display: flex; gap: 0.4rem; margin-bottom: 0.9rem; }
 .assets { margin-top: 0.5rem; }
 .card form, form.card { display: grid; gap: 0.8rem; }
+.lang-btn { font-size: .78rem; font-weight: 600; letter-spacing: .04em; width: auto; padding: 0 .65rem; }

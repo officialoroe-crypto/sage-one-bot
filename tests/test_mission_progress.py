@@ -1,8 +1,10 @@
+from uuid import uuid4
+
 from execution.progress import MissionProgress
 
 
 def test_progress_events_are_ordered_and_normalized():
-    progress = MissionProgress("mission-1")
+    progress = MissionProgress(f"mission-{uuid4()}")
 
     first = progress.emit(
         "wave_started",
