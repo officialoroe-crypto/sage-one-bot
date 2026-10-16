@@ -1,7 +1,27 @@
 # SAGE ONE — PROJECT STATE
 
-Last updated: 2026-10-09
+Last updated: 2026-10-16
 Current main at incident-fix branch creation: 133c5a5f9c8d051e31e9a5d6e7f4aa5e15b99c19
+
+## Claude reconciliation (2026-10-16, repo sage-one-bot)
+
+Evidence labels: **Tested** = run by Claude in this repo; **Not tested** = not run.
+
+| Item | Status |
+|---|---|
+| Backend test suite (259) | Tested, passing on a fresh clone of `sage-one-bot` main |
+| Web chat (`website/chat/`) and phone page (`website/mobile/`) wired to the real API (no scripted replies) | Tested in Chromium against a local backend, using a **fake local AI** (`scripts/dev_test_llm.py`): sign-in (dev mode), onboarding, chat round trip, history, tasks, memory, Evolution (13 tiers), wallet (0 Spark), learning, projects, marketplace, settings, sign-out, server-down message, no overflow at 390px, no CSP console errors |
+| Real AI answers | **Not tested**: needs a provider key (Gemini, Groq, Cerebras or OpenRouter) |
+| Google sign-in (web) | **Not tested**: needs `GOOGLE_CLIENT_ID` and `SAGE_OWNER_AUTH_SUBJECT` on the server |
+| Huawei phone: Google login, microphone, speech, Nepali voice | **Not tested** |
+| Browser voice (speech recognition and read-aloud) on `website/mobile/` | Implemented, **not tested** |
+| Durable hosting database | **Not done**: Render free tier wipes SQLite on restart; needs Postgres |
+| Payments, payout, OTP provider, KYC | **Not done** |
+| Public release | **Not authorized.** The website publish workflow exists but GitHub Pages is not enabled; nothing is published |
+
+Fixes made on 2026-10-15: workflow API repository binding, owner-scoped tasks, `GET /sessions`, profile name no longer overwritten at sign-in, Ollama `think_with_tools`.
+
+Open decisions for the owner: (1) the history document splits money into SP (no cash value) and SS (possible payout), while the website and wallet use one unit, "1 Spark = NPR 1" with cash-out unavailable; (2) release rule versus the wish for an online test link; (3) Silver/Gold limits and the 200 vs 500 ceiling.
 
 ## Identity
 - Project: SAGE ONE
