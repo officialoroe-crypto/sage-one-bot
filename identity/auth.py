@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 import hashlib
 import secrets
 import time
@@ -77,6 +78,11 @@ def verify_google_id_token(raw_token: str) -> dict[str, Any]:
                 detail="Production owner identity is not configured.",
             )
         if str(subject) != settings.OWNER_AUTH_SUBJECT:
+            # The owner can read their own Google id here (server logs) to set SAGE_OWNER_AUTH_SUBJECT.
+            logging.getLogger("sage.identity").warning(
+                "Sign-in refused: Google subject=%s email=%s is not the configured owner.",
+                subject, claims.get("email"),
+            )
             raise HTTPException(
                 status_code=403,
                 detail="This SAGE ONE deployment is restricted to its configured owner.",

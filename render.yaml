@@ -1,0 +1,29 @@
+# Render blueprint for the SAGE ONE API (free web service). Secrets are entered in the Render dashboard
+# (sync: false), never stored in Git. See docs/DEPLOY_PUBLIC.md.
+services:
+  - type: web
+    name: sage-one-api
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python -m uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.13.0"
+      - key: SAGE_ENV
+        value: production
+      - key: SAGE_CORS_ORIGINS
+        value: https://officialoroe-crypto.github.io
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: SAGE_OWNER_AUTH_SUBJECT
+        sync: false
+      - key: SAGE_DATABASE_URL
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: CEREBRAS_API_KEY
+        sync: false
