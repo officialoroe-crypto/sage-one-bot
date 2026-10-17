@@ -11,7 +11,7 @@ Evidence labels: **Tested** = run by Claude in this repo; **Not tested** = not r
 |---|---|
 | Backend test suite (259) | Tested, passing on a fresh clone of `sage-one-bot` main |
 | Web chat (`website/chat/`) and phone page (`website/mobile/`) wired to the real API (no scripted replies) | Tested in Chromium against a local backend, using a **fake local AI** (`scripts/dev_test_llm.py`): sign-in (dev mode), onboarding, chat round trip, history, tasks, memory, Evolution (13 tiers), wallet (0 Spark), learning, projects, marketplace, settings, sign-out, server-down message, no overflow at 390px, no CSP console errors |
-| Real AI answers | **Not tested**: needs a provider key (Gemini, Groq, Cerebras or OpenRouter) |
+| Real AI answers | **Not tested**: needs a provider key (Gemini, Groq, Cerebras) |
 | Google sign-in (web) | **Not tested**: needs `GOOGLE_CLIENT_ID` and `SAGE_OWNER_AUTH_SUBJECT` on the server |
 | Huawei phone: Google login, microphone, speech, Nepali voice | **Not tested** |
 | Browser voice (speech recognition and read-aloud) on `website/mobile/` | Implemented, **not tested** |

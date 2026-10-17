@@ -34,6 +34,15 @@ python -m pytest -q tests
 
 Secrets are **not** stored in GitHub. Create `.env` yourself with the names listed in `.env.example`.
 
+## Quick start: paste your key and it runs
+
+1. Windows: double-click `start.bat`. Mac/Linux: run `./start.sh`.
+2. First run installs everything and asks for your keys (typing is hidden). Get a free Gemini key at aistudio.google.com/apikey, or a free Groq key at console.groq.com. SAGE tests each key on the spot and tells you if it works.
+3. Your browser opens the chat. On your own computer press **Local developer sign-in**.
+4. To change keys later: `python scripts/sage_setup.py`. To only check: `python scripts/sage_setup.py --check`.
+
+For a public link anyone can open, follow `docs/DEPLOY_PUBLIC.md` (the same keys go into Render instead of a file).
+
 ## The real web app (website/chat and website/mobile)
 
 The website has two real pages that talk to the SAGE server. There are no demo replies or fake logins: every answer, rank, Spark balance, task, memory and project comes from the server.
@@ -49,7 +58,7 @@ What the server needs before the pages are fully useful (put these in the server
 |---|---|
 | `GOOGLE_CLIENT_ID` | Turns on Google sign-in (create an OAuth Web client in Google Cloud and add the website address as an authorised origin) |
 | `SAGE_OWNER_AUTH_SUBJECT` | Your Google account id (`sub`), so only you can sign in |
-| `GEMINI_API_KEY` / `GROQ_API_KEY` / `CEREBRAS_API_KEY` / `OPENROUTER_API_KEY` | At least one, so SAGE can think. Without any key the chat says so honestly |
+| `GEMINI_API_KEY` / `GROQ_API_KEY` / `CEREBRAS_API_KEY` | At least one, so SAGE can think. Without any key the chat says so honestly |
 | `SAGE_CORS_ORIGINS` | The website address(es), e.g. `https://officialoroe-crypto.github.io` |
 | `SAGE_DATABASE_URL` | A durable database (hosted Postgres). Free-tier SQLite is wiped on restart |
 | `SAGE_ENV=production` | Turns off docs and developer mode |

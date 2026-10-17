@@ -59,7 +59,7 @@ Tests: 255 pass, including 12 new ones in `tests/test_security_hardening.py` (he
 | `SAGE_CORS_ORIGINS` | `https://officialoroe-crypto.github.io` (your site origin, https only, no trailing path) |
 | `SAGE_TRUST_PROXY_HEADERS` | `true` (Render's proxy sets `X-Forwarded-For`; needed so rate limits are per visitor, not global) |
 | `SAGE_DATABASE_URL` | Postgres URL from your database provider |
-| `GEMINI_API_KEY`, `GROQ_API_KEY`, `CEREBRAS_API_KEY`, `OPENROUTER_API_KEY` | only the providers you use |
+| `GEMINI_API_KEY`, `GROQ_API_KEY`, `CEREBRAS_API_KEY | only the providers you use |
 
 5. Do **not** set `SAGE_DEV_MODE` or `SAGE_PRIVATE_MODE` (they are ignored in production anyway).
 6. Finding your Google `sub`: sign in once with Google against a *non-production* run (or a local one) and read `identity.subject` in the `/identity/google` response. Then set it in Render.

@@ -227,7 +227,7 @@
     var e = String(raw || '').trim();
     if (!e) return 'SAGE could not finish that.';
     if (/all allowed sage providers failed/i.test(e)) {
-      return 'SAGE has no working AI provider yet. The server needs at least one AI key (Gemini, Groq, Cerebras, OpenRouter) or a running local Ollama. Details: ' + e.replace(/\s+/g, ' ');
+      return 'SAGE has no working AI provider yet. The server needs at least one AI key (Gemini, Groq, Cerebras) or a running local Ollama. Details: ' + e.replace(/\s+/g, ' ');
     }
     return e.replace(/\s+$/, '');
   }
